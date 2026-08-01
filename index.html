@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Davide Paolillo — Composer / Sound Artist / Researcher</title>
+<meta name="description" content="Davide Paolillo — composer, sound artist, and researcher.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+
+<style>
+  /* ============================================================
+     DESIGN TOKENS
+     Monospace throughout — the kind of font used in code editors
+     like SuperCollider (which defaults to Monaco/Consolas-style
+     monospace faces). JetBrains Mono is the closest well-supported
+     free equivalent.
+     ============================================================ */
+  :root{
+    --bg:        #FAFAF8;
+    --ink:       #171614;
+    --ink-soft:  #6B675F;
+    --line:      #E4E1D9;
+    --accent:    #A6321E;
+
+    --display: 'JetBrains Mono', monospace;
+    --sans: 'JetBrains Mono', monospace;
+    --max: 1240px;
+    --gutter: 6vw;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *{ animation-duration:0.001ms !important; transition-duration:0.001ms !important; }
+  }
+  body{
+    background:var(--bg); /* fallback if canvas/JS doesn't run; noise canvas paints over this */
+    color:var(--ink); font-family:var(--sans);
+    font-size:16px; line-height:1.65; -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{ color:inherit; text-decoration:none; }
+  img{ max-width:100%; display:block; }
+  ::selection{ background:var(--accent); color:#fff; }
+  :focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+  .wrap{ max-width:var(--max); margin:0 auto; padding:0 var(--gutter); }
+
+  /* ============================================================
+     AMBIENT BACKGROUND NOISE — sits behind About/Works/Research/
+     Contact. Much calmer than the home canvas: narrow tonal range
+     close to the page background color, and updated only a few
+     times per second rather than every frame, so it reads as a
+     quiet paper grain rather than static.
+     ============================================================ */
+  .bg-noise{
+    position:fixed; inset:0; z-index:-1;
+    width:100vw; height:100vh;
+    pointer-events:none;
+  }
+
+  /* ============================================================
+     TOP BAR — fixed, mix-blend-mode so it reads over any image
+     ============================================================ */
+  .top-bar{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; align-items:flex-start; justify-content:space-between;
+    padding:24px var(--gutter);
+    color:#fff;
+    mix-blend-mode:difference;
+  }
+  .mark-block{ cursor:pointer; }
+  .mark{
+    font-family:var(--display); font-style:italic; font-weight:400;
+    font-size:1.05rem; letter-spacing:0.01em;
+  }
+  .mark-sub{
+    margin-top:4px;
+    font-family:var(--sans); font-style:normal; font-weight:400;
+    font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase;
+    opacity:0.85;
+  }
+  .menu-btn{
+    background:none; border:none; color:inherit; cursor:pointer;
+    font-family:var(--sans); font-size:0.78rem; letter-spacing:0.14em;
+    text-transform:uppercase; display:flex; align-items:center; gap:10px;
+  }
+  .menu-btn .bars{ display:flex; flex-direction:column; gap:4px; }
+  .menu-btn .bars span{ width:22px; height:1px; background:currentColor; display:block; }
+
+  /* ============================================================
+     HOME — full-bleed image, nothing else
+     ============================================================ */
+  #home.view{ padding:0; position:relative; }
+  .home-image{
+    width:100%; height:100vh;
+    display:block;
+    cursor:pointer;
+    background:#171614; /* fallback while canvas boots */
+  }
+
+  /* ============================================================
+     MENU POPUP — small dropdown anchored under the menu button,
+     not a full-screen takeover
+     ============================================================ */
+  .menu-overlay{
+    position:fixed; top:66px; right:var(--gutter); z-index:200;
+    min-width:190px;
+    background:var(--bg);
+    border:1px solid var(--line);
+    box-shadow:0 10px 30px rgba(23,22,20,0.10);
+    padding:6px;
+    opacity:0; visibility:hidden; transform:translateY(-6px);
+    transition:opacity .18s ease, transform .18s ease, visibility .18s;
+  }
+  .menu-overlay.open{ opacity:1; visibility:visible; transform:translateY(0); }
+  .menu-links{
+    display:flex; flex-direction:column;
+  }
+  .menu-links a{
+    font-family:var(--sans); font-style:normal; font-weight:400;
+    font-size:0.78rem; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--ink); opacity:0.7; padding:10px 12px;
+    border-bottom:1px solid var(--line);
+    transition:opacity .2s ease, color .2s ease;
+  }
+  .menu-links a:last-child{ border-bottom:none; }
+  .menu-links a:hover{ opacity:1; color:var(--accent); }
+  .menu-footer{
+    padding:10px 12px 6px;
+    font-size:0.7rem; color:var(--ink-soft); letter-spacing:0.03em;
+    border-top:1px solid var(--line); margin-top:2px;
+  }
+
+  /* ============================================================
+     VIEWS — hidden by default, shown one at a time via JS
+     ============================================================ */
+  .view{ display:none; }
+  .view.active{ display:block; }
+  main .view:not(#home){ padding-top:110px; }
+
+  section{ padding-bottom:80px; }
+  .section-head{ margin-bottom:46px; }
+  .section-head .kicker{
+    font-size:0.75rem; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--ink-soft); margin-bottom:10px;
+  }
+  .section-head h2{
+    font-family:var(--display); font-weight:400; font-style:italic;
+    font-size:clamp(1.6rem,3.5vw,2.2rem);
+  }
+
+  /* ============================================================
+     WORK DETAIL — individual subpage per piece, reached by
+     clicking a row in Works. Same view-switching mechanism as
+     the main sections.
+     ============================================================ */
+  .back-link{
+    display:inline-flex; align-items:center; gap:8px; cursor:pointer;
+    font-size:0.75rem; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--ink-soft); margin-bottom:36px;
+  }
+  .back-link:hover{ color:var(--accent); }
+  .work-detail-media{
+    width:100%; aspect-ratio:16/9; overflow:hidden; background:var(--line);
+    margin-bottom:36px;
+  }
+  .work-detail-media img{ width:100%; height:100%; object-fit:cover; filter:grayscale(1) contrast(1.02); }
+  .work-detail-media .ph{ width:100%; height:100%; background:linear-gradient(150deg,#cfcac0,#9d968a); }
+  .work-detail-gallery{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:12px; margin:-16px 0 36px;
+  }
+  .work-detail-gallery img{
+    width:100%; aspect-ratio:4/3; object-fit:cover;
+    filter:grayscale(1) contrast(1.02); display:block;
+  }
+  .work-detail-body{ max-width:70ch; }
+  .work-detail-body .kicker{
+    font-size:0.78rem; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--ink-soft); margin-bottom:12px;
+  }
+  .work-detail-body h2{
+    font-family:var(--display); font-style:italic; font-weight:400;
+    font-size:clamp(1.6rem,4vw,2.4rem); margin-bottom:18px;
+  }
+  .work-detail-body .note{ color:var(--ink-soft); font-size:1rem; margin-bottom:22px; }
+  .work-detail-body .link{
+    display:inline-block; font-size:0.78rem; text-transform:uppercase;
+    letter-spacing:0.06em; color:var(--accent); border-bottom:1px solid var(--accent);
+  }
+  .work-detail-body .grant-note{
+    font-size:0.82rem; font-style:italic; color:var(--ink-soft);
+    margin:-8px 0 22px;
+  }
+  .work-detail-body .note-list{
+    list-style:none; color:var(--ink-soft); font-size:1rem;
+    margin:-10px 0 22px; padding:0;
+  }
+  .work-detail-body .note-list li{
+    padding-left:16px; position:relative; margin-bottom:6px;
+  }
+  .work-detail-body .note-list li::before{
+    content:"—"; position:absolute; left:0; color:var(--ink-soft);
+  }
+
+  /* ============================================================
+     WORKS — grouped by category. A grid of clickable thumbnails
+     (title set over the media, referencing lythgoe.studio/category/work);
+     each opens its own subpage with the full program note.
+     ============================================================ */
+  .works-group{ margin-bottom:60px; }
+  .works-group-head{
+    font-size:0.78rem; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--ink); margin-bottom:20px; padding-bottom:12px;
+    border-bottom:1px solid var(--line);
+  }
+  .works-list{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:2px; background:var(--line);
+  }
+  .work-tile{
+    background:var(--bg); position:relative; aspect-ratio:4/3; overflow:hidden;
+    cursor:pointer; display:block;
+  }
+  .work-tile img{
+    width:100%; height:100%; object-fit:cover; filter:grayscale(1) contrast(1.02);
+    transition:transform .5s ease;
+  }
+  .work-tile:hover img{ transform:scale(1.04); }
+  .work-tile .ph{
+    width:100%; height:100%;
+    background:linear-gradient(150deg,#cfcac0,#9d968a);
+    transition:transform .5s ease;
+  }
+  .work-tile:hover .ph{ transform:scale(1.04); }
+  .work-tile .thumb-cap{
+    position:absolute; left:0; right:0; bottom:0; padding:16px 18px;
+    background:linear-gradient(0deg, rgba(23,22,20,0.78), transparent 75%);
+    color:#fff;
+  }
+  .work-tile .thumb-cap .t{
+    font-family:var(--display); font-style:italic; font-weight:400;
+    font-size:1.05rem; line-height:1.25;
+  }
+  .work-tile .thumb-cap .yr{
+    font-size:0.68rem; letter-spacing:0.08em; text-transform:uppercase;
+    opacity:0.85; margin-top:4px;
+  }
+
+  /* ============================================================
+     RESEARCH
+     ============================================================ */
+  .research-intro{ max-width:64ch; color:var(--ink-soft); margin-bottom:22px; }
+  .research-block{ margin-bottom:44px; }
+  .research-block h3{
+    font-size:0.78rem; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--ink); margin-bottom:18px; padding-bottom:10px; border-bottom:1px solid var(--line);
+  }
+  .research-item{ display:flex; gap:20px; padding:14px 0; border-bottom:1px dashed var(--line); font-size:0.95rem; }
+  .research-item:last-child{ border-bottom:none; }
+  .research-item .yr{ flex:0 0 90px; color:var(--ink-soft); font-size:0.85rem; padding-top:1px; }
+  .research-item .body strong{ font-weight:600; }
+  .research-item .body .venue{ color:var(--ink-soft); font-size:0.9rem; }
+  .status-pill{
+    display:inline-block; margin-left:10px; font-size:0.68rem; letter-spacing:0.06em;
+    text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+    padding:1px 7px; border-radius:2px; vertical-align:middle;
+  }
+
+  /* ============================================================
+     ABOUT
+     ============================================================ */
+  .about-grid{ display:grid; grid-template-columns:0.85fr 1.15fr; gap:64px; align-items:start; }
+  @media (max-width:800px){ .about-grid{ grid-template-columns:1fr; } }
+  .about-photo{ aspect-ratio:3/4; overflow:hidden; background:var(--line); }
+  .about-photo img{ width:100%; height:100%; object-fit:cover; filter:grayscale(1); }
+  .about-bio p{ margin-bottom:18px; max-width:60ch; color:var(--ink-soft); }
+  .about-bio p strong{ color:var(--ink); font-weight:600; }
+  .cv-panel{ margin-top:34px; }
+  .cv-panel h3{ font-size:0.75rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:16px; }
+  .cv-group{ font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent); margin:26px 0 4px; }
+  .cv-group:first-of-type{ margin-top:4px; }
+  .cv-item{ display:flex; justify-content:space-between; gap:16px; padding:10px 0; border-top:1px solid var(--line); font-size:0.92rem; }
+  .cv-item .role{ line-height:1.45; }
+  .cv-item .role .place{ display:block; color:var(--ink-soft); font-size:0.85rem; margin-top:2px; }
+  .cv-item:first-of-type{ border-top:none; }
+  .cv-item .yr{ color:var(--ink-soft); white-space:nowrap; font-size:0.85rem; }
+  .btn{
+    display:inline-block; margin-top:28px; padding:12px 22px;
+    background:var(--ink); color:var(--bg); font-size:0.78rem; letter-spacing:0.08em;
+    text-transform:uppercase; border:1px solid var(--ink);
+    transition:background .2s ease, color .2s ease;
+  }
+  .btn:hover{ background:transparent; color:var(--ink); }
+
+  /* ============================================================
+     CONTACT
+     ============================================================ */
+  .contact h2{
+    font-family:var(--display); font-weight:400; font-style:italic;
+    font-size:clamp(1.8rem,4.5vw,2.8rem); max-width:18ch; margin-bottom:28px;
+  }
+  .contact-links{ display:flex; flex-wrap:wrap; gap:14px 32px; }
+  .contact-links a{
+    font-size:0.9rem; color:var(--ink-soft); border-bottom:1px solid var(--line); padding-bottom:2px;
+    transition:color .2s ease, border-color .2s ease;
+  }
+  .contact-links a:hover{ color:var(--accent); border-color:var(--accent); }
+
+  footer{
+    padding:30px 0 50px; font-size:0.75rem; color:var(--ink-soft);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Ambient background noise — behind About/Works/Research/Contact.
+     The home page has its own separate, faster, interactive noise. -->
+<canvas class="bg-noise" id="bgNoiseCanvas"></canvas>
+
+<!-- ============================================================
+     TOP BAR — always visible, name returns home, button opens menu
+     ============================================================ -->
+<div class="top-bar">
+  <a class="mark-block" data-target="home">
+    <div class="mark">Davide Paolillo</div>
+    <div class="mark-sub">Composer / Sound Artist / Researcher</div>
+  </a>
+  <button class="menu-btn" id="menuToggle">
+    Menu
+    <span class="bars"><span></span><span></span></span>
+  </button>
+</div>
+
+<!-- ============================================================
+     FULL-SCREEN POPUP MENU — this is how sections are reached
+     ============================================================ -->
+<div class="menu-overlay" id="menuOverlay">
+  <nav class="menu-links">
+    <a href="#" data-target="about">About</a>
+    <a href="#" data-target="works">Works</a>
+    <a href="#" data-target="research">Research</a>
+    <a href="#" data-target="contact">Contact</a>
+  </nav>
+  <div class="menu-footer">paolillodavide92@gmail.com</div>
+</div>
+
+<main>
+
+  <!-- HOME — image only, click anywhere to open the menu -->
+  <section id="home" class="view active">
+    <canvas class="home-image" id="homeCanvas"></canvas>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="view">
+    <div class="wrap about-grid">
+      <div class="about-photo"><img src="images/davide-about.jpg" alt="Portrait of Davide Paolillo"></div>
+      <div>
+        <div class="section-head">
+          <p class="kicker">About</p>
+        </div>
+        <div class="about-bio">
+          <p>Most of my work starts with my hands on something: deforming an
+          instrument, listening to an everyday object, building small
+          electronic devices, or writing code that listens back. I'm drawn to
+          the physical side of sound and to the shifting relation between
+          composer, performer, and media. Central to my exploration is the
+          concept of nonlinearity and its reflection on the creative
+          process.</p>
+          <p>I studied Jazz Piano, Electronic Music, and Composition between
+          Milan, Como, and Antwerp, and attended the one-year course at the
+          Institute of Sonology in The Hague.</p>
+          <p>My training shows up in chamber music pieces ranging from solo to
+          ensemble works, with and without electronics, as well as in
+          multimedia installations and multichannel electronic works. I'm an
+          electronic performer specialised in no-input mixing and other noisy
+          practices. I teach music in the Drama department of the Conservatory
+          of Antwerp, and I'm currently pursuing a PhD at the University of
+          Antwerp.</p>
+        </div>
+        <div class="cv-panel">
+          <h3>CV — Highlights</h3>
+
+          <p class="cv-group">Education</p>
+          <div class="cv-item">
+            <span class="role">PhD in the Arts, Specialisation in Composition<span class="place">Royal Conservatory of Antwerp / University of Antwerp</span></span>
+            <span class="yr">2025–present</span>
+          </div>
+          <div class="cv-item">
+            <span class="role">Postgraduate one-year course<span class="place">Institute of Sonology, The Hague</span></span>
+            <span class="yr">2024</span>
+          </div>
+          <div class="cv-item">
+            <span class="role">MA in the Arts, Specialisation in Composition<span class="place">Royal Conservatory of Antwerp</span></span>
+            <span class="yr">2023</span>
+          </div>
+
+          <p class="cv-group">Grants</p>
+          <div class="cv-item">
+            <span class="role">Emerging Talent Grant for Artistic Research<span class="place">Flanders Government</span></span>
+            <span class="yr">2025</span>
+          </div>
+
+          <a class="btn" href="cv.pdf" download>Download CV</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORKS -->
+  <section id="works" class="view">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Selected Works</p>
+      </div>
+
+      <div class="works-group">
+        <p class="works-group-head">Music</p>
+        <div class="works-list">
+
+          <div class="work-tile" data-target="work-circuits-love-songs">
+            <img src="images/works/15-circuits-love-songs.jpg" alt="Circuits' Love Songs">
+            <div class="thumb-cap"><div class="t">Circuits' Love Songs</div><div class="yr">01 · 2026</div></div>
+          </div>
+          <div class="work-tile" data-target="work-time-board-mother-control">
+            <img src="images/works/16-time-board-1.jpg" alt="Time Board Mother Control">
+            <div class="thumb-cap"><div class="t">Time Board Mother Control</div><div class="yr">02 · 2026</div></div>
+          </div>
+          <div class="work-tile" data-target="work-no-input">
+            <img src="images/works/02-no-input.jpg" alt="No-input/Some Inputs">
+            <div class="thumb-cap"><div class="t">No-input/Some Inputs</div><div class="yr">03 · 2024–2026</div></div>
+          </div>
+          <div class="work-tile" data-target="work-my-slumber">
+            <img src="images/works/01-my-slumber.jpg" alt="My slumber is so deep, that it slips beneath the seas">
+            <div class="thumb-cap"><div class="t">My slumber is so deep, that it slips beneath the seas</div><div class="yr">04 · 2025</div></div>
+          </div>
+          <div class="work-tile" data-target="work-phersu">
+            <img src="images/works/03-phersu.png" alt="Phersu, risuonare il respiro">
+            <div class="thumb-cap"><div class="t">Phersu, risuonare il respiro</div><div class="yr">05 · 2024</div></div>
+          </div>
+          <div class="work-tile" data-target="work-undercurrent">
+            <img src="images/works/04-undercurrent.jpg" alt="Undercurrent">
+            <div class="thumb-cap"><div class="t">Undercurrent</div><div class="yr">06 · 2024</div></div>
+          </div>
+          <div class="work-tile" data-target="work-face-to-face">
+            <img src="images/works/05-face-to-face.png" alt="Face to face with the Submarine and its shiny iron">
+            <div class="thumb-cap"><div class="t">Face to face with the Submarine and its shiny iron</div><div class="yr">07 · 2023</div></div>
+          </div>
+          <div class="work-tile" data-target="work-laria">
+            <img src="images/works/06-laria.png" alt="L'aria nei giorni festivi">
+            <div class="thumb-cap"><div class="t">L'aria nei giorni festivi</div><div class="yr">08 · 2023</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="works-group">
+        <p class="works-group-head">Multimedia</p>
+        <div class="works-list">
+
+          <div class="work-tile" data-target="work-le-masciare">
+            <img src="images/works/09-le-masciare.jpg" alt="Le Masciàre, o lo Scongiuro della Settimana Santa">
+            <div class="thumb-cap"><div class="t">Le Masciàre, o lo Scongiuro della Settimana Santa</div><div class="yr">01 · 2025</div></div>
+          </div>
+          <div class="work-tile" data-target="work-sospensione-collettiva">
+            <img src="images/works/10-sospensione-collettiva.jpg" alt="Sospensione Collettiva #1">
+            <div class="thumb-cap"><div class="t">[Sospensione Collettiva #1]</div><div class="yr">02 · 2024</div></div>
+          </div>
+          <div class="work-tile" data-target="work-i-was-a-river">
+            <img src="images/works/11-i-was-a-river.jpg" alt="I was a river, an elephant and a worker">
+            <div class="thumb-cap"><div class="t">I was a river, an elephant and a worker</div><div class="yr">03 · 2023</div></div>
+          </div>
+          <div class="work-tile" data-target="work-when-i-close-my-eyes">
+            <img src="images/works/14-when-i-close-my-eyes.jpg" alt="When I close my eyes everything turns black">
+            <div class="thumb-cap"><div class="t">When I close my eyes everything turns black</div><div class="yr">06 · 2022</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="works-group">
+        <p class="works-group-head">Performances</p>
+
+        <div class="research-block">
+          <h3>Upcoming</h3>
+          <div class="research-item">
+            <div class="yr">24 Sept 2026</div>
+            <div class="body">
+              <strong>Circuits' Love Songs</strong>
+              <div class="venue">BathyScaphe, Brussels</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="research-block">
+          <h3>Past</h3>
+          <div class="research-item">
+            <div class="yr">06 Jul 2026</div>
+            <div class="body"><strong>Circuits' Love Songs</strong><div class="venue">BathyScaphe, Brussels</div></div>
+          </div>
+          <div class="research-item">
+            <div class="yr">31 May 2026</div>
+            <div class="body"><strong>Time Board Mother Control</strong><div class="venue">Hectolitre, Brussels</div></div>
+          </div>
+          <div class="research-item">
+            <div class="yr">23 Mar 2026</div>
+            <div class="body"><strong>Longing</strong><div class="venue">KCA, Antwerp</div></div>
+          </div>
+          <div class="research-item">
+            <div class="yr">12 Jul 2025</div>
+            <div class="body"><strong>Le Masciàre, o lo Scongiuro della Settimana Santa</strong><div class="venue">Platypus Festival, Alberobello</div></div>
+          </div>
+          <div class="research-item">
+            <div class="yr">Sept 2025</div>
+            <div class="body"><strong>Beton</strong><div class="venue">Residency with final performance at Het Bos, Antwerp</div></div>
+          </div>
+          <div class="research-item">
+            <div class="yr">23 Feb 2025</div>
+            <div class="body"><strong>My slumber is so deep, that it slips beneath the seas</strong><div class="venue">Performed by Pietro Elia Barcellona — TiP, Graz</div></div>
+          </div>
+          <div class="research-item">
+            <div class="yr">02 Feb 2025</div>
+            <div class="body"><strong>"Shall I wash my mouth?"</strong><div class="venue">Hectolitre, Bruxelles</div></div>
+          </div>
+          <div class="research-item">
+            <div class="yr">19 Jun 2024</div>
+            <div class="body"><strong>Phersu</strong><div class="venue">Performed by Arno Strauven — KCA, Antwerp</div></div>
+          </div>
+          <div class="research-item">
+            <div class="yr">15 Jun 2024</div>
+            <div class="body"><strong>[Sospensione Collettiva #1]</strong><div class="venue">Nova, Antwerp</div></div>
+          </div>
+          <div class="research-item">
+            <div class="yr">31 May 2024</div>
+            <div class="body"><strong>Undercurrent</strong><div class="venue">WFS Festival — AMARE, Den Haag</div></div>
+          </div>
+          <div class="research-item">
+            <div class="yr">22 Oct 2023</div>
+            <div class="body"><strong>L'aria nei giorni festivi</strong><div class="venue">Performed by HERMESensemble — TRANSIT Festival, STUK, Leuven</div></div>
+          </div>
+          <div class="research-item">
+            <div class="yr">19 Jun 2023</div>
+            <div class="body"><strong>Psach</strong><div class="venue">Live sound diffusion performance, with Amit Leblang — UPJB, Brussels</div></div>
+          </div>
+          <div class="research-item">
+            <div class="yr">06 May 2023</div>
+            <div class="body"><strong>I was a river, an elephant and a worker</strong><div class="venue">Costa Theater, Antwerp</div></div>
+          </div>
+          <div class="research-item">
+            <div class="yr">Oct 2022</div>
+            <div class="body"><strong>When my eyes are closed everything turns black</strong><div class="venue">Performed with Linda Jasmin Mayer, Ljudmila Siewersky, and BL!NDMAN Collective — Blauwe Zaal, KCA, Antwerp</div></div>
+          </div>
+          <div class="research-item">
+            <div class="yr">Jun 2022</div>
+            <div class="body"><strong>Een werk in de kerk</strong><div class="venue">Audio-visual installation with fixed media, with Linda Jasmin Mayer — Sint Antonius Abtkerk, Ghent</div></div>
+          </div>
+          <div class="research-item">
+            <div class="yr">Feb 2022</div>
+            <div class="body"><strong>SUI GENESIS: Digital Shaping</strong><div class="venue">Audio-visual installation with fixed media, with Joe Karava — Galleria Gluck 50, Milano</div></div>
+          </div>
+          <div class="research-item">
+            <div class="yr">May 2022</div>
+            <div class="body"><strong>De 4 elementen show</strong><div class="venue">"Substrati" performed by Erika Vogel's trio — Theatre Garage, Antwerp</div></div>
+          </div>
+          <div class="research-item">
+            <div class="yr">Jul 2021</div>
+            <div class="body"><strong>"Di pioggia e marea"</strong><div class="venue">For cello and bass clarinet — Palazzo Chigi-Saracini, Siena</div></div>
+          </div>
+          <div class="research-item">
+            <div class="yr">2020</div>
+            <div class="body"><strong>How to Be Kong</strong><div class="venue">Short animated film, with S.A.E. Institute Paris and Riccardo Monica — London &amp; Athens International Film Festivals</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- RESEARCH -->
+  <section id="research" class="view">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Doctoral Research</p>
+        <h2>Entangled Rawness: navigating nonlinear creativity through the no-input mixer</h2>
+      </div>
+      <p class="research-intro">
+        My research explores the creative and interactive possibilities of the no-input mixer within experimental music and performative art.
+      </p>
+      <p class="research-intro">
+        The study treats the no-input mixer as both source and outcome of nonlinearity. Approaching its "lack of control" as a democratic medium resists hierarchical structures, reframing the creative process as an open dialogue between artist, medium, and audience.
+      </p>
+      <p class="research-intro">
+        Rooted in experimental music practice, the research addresses this unpredictable, nonlinear nature from three interrelated perspectives: as an <strong>Instrument</strong> for composing and performing with unpredictability, error, non-virtuosity, and emergent behavior; as a <strong>Device</strong> for designing new hybrid instruments and performative ecosystems, exploring agency and liveness in art and technology; and as a <strong>Tool</strong> for opening accessible, sustainable spaces of "not-knowing," for shifting perception and unexpected experience.
+      </p>
+      <div class="research-block">
+        <h3>Current Projects</h3>
+        <div class="research-item">
+          <div class="yr">2026</div>
+          <div class="body">
+            <strong>Everything is crunchy in NoiseLand</strong>
+            <span class="status-pill">Forthcoming Sept 2026</span>
+            <div class="venue">Toolbox</div>
+          </div>
+        </div>
+        <div class="research-item">
+          <div class="yr">2026</div>
+          <div class="body">
+            <strong>No-input/Some-inputs, a catalogue of interactive possibilities</strong>
+            <div class="venue">Catalogue</div>
+          </div>
+        </div>
+        <div class="research-item">
+          <div class="yr">2026</div>
+          <div class="body">
+            <strong>Drone Machine</strong>
+            <div class="venue">Instrumental Design — 5-oscillator drone machine</div>
+          </div>
+        </div>
+        <div class="research-item">
+          <div class="yr">2026</div>
+          <div class="body">
+            <strong>Matrix Mixer</strong>
+            <div class="venue">Instrumental Design</div>
+          </div>
+        </div>
+      </div>
+      <div class="research-block">
+        <h3>Talks &amp; Teaching — Upcoming</h3>
+        <div class="research-item">
+          <div class="yr">22 Oct 2026</div>
+          <div class="body">
+            <strong>Articulate — Research Festival</strong>
+            <div class="venue">Workshop on EMF microphones at Royal Conservatory of Antwerp, Antwerp</div>
+          </div>
+        </div>
+        <div class="research-item">
+          <div class="yr">10 Sept 2026</div>
+          <div class="body">
+            <strong>Symposium: The Performer-Composer in the 21st Century</strong>
+            <div class="venue">Lecture-performance at LUCA School of Arts, Leuven</div>
+          </div>
+        </div>
+      </div>
+      <div class="research-block">
+        <h3>Talks &amp; Teaching — Past</h3>
+        <div class="research-item">
+          <div class="yr">Mar 2026</div>
+          <div class="body"><strong>CONVERGENCE 2026</strong><div class="venue">Lecture-performance at Royal Conservatory of Antwerp, Antwerp</div></div>
+        </div>
+        <div class="research-item">
+          <div class="yr">Feb–May 2026</div>
+          <div class="body"><strong>From Tape to Data: The Shifting Paradigms of Electronic Music</strong><div class="venue">Music History module, Royal Conservatoire of Antwerp, Antwerp</div></div>
+        </div>
+        <div class="research-item">
+          <div class="yr">Feb 2026</div>
+          <div class="body"><strong>Broken Narratives Laboratory</strong><div class="venue">Workshop with final performance, in collaboration with Furkan Ak — Royal Conservatoire of Antwerp, Antwerp</div></div>
+        </div>
+        <div class="research-item">
+          <div class="yr">Oct 2025</div>
+          <div class="body"><strong>REACT 2025</strong><div class="venue">Poster presentation for the Future Shock Orchestra project, in collaboration with Chiara Percivati — Wien</div></div>
+        </div>
+        <div class="research-item">
+          <div class="yr">Oct 2025</div>
+          <div class="body"><strong>Articulate 2025 — Research Festival</strong><div class="venue">Lecture-performance for the Future Shock Orchestra project, in collaboration with Chiara Percivati</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="view">
+    <div class="wrap contact">
+      <h2>Get in touch</h2>
+      <div class="contact-links">
+        <a href="mailto:paolillodavide92@gmail.com">paolillodavide92@gmail.com</a>
+        <a href="https://instagram.com/_davidepaolillo" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://soundcloud.com/davide-paolillo-269162757" target="_blank" rel="noopener">SoundCloud</a>
+        <a href="https://orcid.org/my-orcid?orcid=0009-0008-8195-5525" target="_blank" rel="noopener">ORCID</a>
+        <a href="https://ap-arts.be/en/person/davide-paolillo" target="_blank" rel="noopener">Institutional page</a>
+        <a href="cv.pdf" download>CV (PDF)</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="work-my-slumber" class="view">
+    <div class="wrap">
+      <a class="back-link" data-target="works">← Works</a>
+      <div class="work-detail-media"><img src="images/works/01-my-slumber.jpg" alt="My slumber is so deep, that it slips beneath the seas"></div>
+      <div class="work-detail-body">
+        <p class="kicker">Music · 2025</p>
+        <h2>My slumber is so deep, that it slips beneath the seas</h2>
+        <p class="note">For solo double bass and live electronics. Performed by Pietro Elia Barcellona (double bass). Graz, 23 February 2025.</p>
+        <p class="note">The piece takes its title and its impulse from a short story in Irene Solà's <em>When I Sing, Mountains Dance</em>, where a mountain speaks with the humans who try to inhabit it. In that posthuman gaze, the double bass and its resonant body become a kind of geological voice: slow, indifferent, outlasting whatever gets built on top of it. However much we try to build and evolve, what remains, once we are gone, will be only nature, still murmuring underneath.</p>
+        <a class="link" href="https://youtu.be/ut-Fu-N9-1g" target="_blank" rel="noopener">Watch →</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="work-no-input" class="view">
+    <div class="wrap">
+      <a class="back-link" data-target="works">← Works</a>
+      <div class="work-detail-media"><img src="images/works/02-no-input.jpg" alt="No-input/Some Inputs"></div>
+      <div class="work-detail-body">
+        <p class="kicker">Music · 2024–2026</p>
+        <h2>No-input/Some Inputs</h2>
+        <p class="note">Series of pieces for no-input mixer and acoustic instruments. Based on the acoustic morphologies of the acoustic instruments, each performance explores different interaction possibilities between them and the nonlinear system in which they're thrown.</p>
+        <p class="note">The series includes:</p>
+        <ul class="note-list">
+          <li>"Shall I wash my mouth?" — for cymbal, voice, and no-input mixer (2023–24)</li>
+          <li>Le Masciàre, o lo Scongiuro della Settimana Santa — audio-reactive video system and no-input mixer (2024–25)</li>
+          <li>Beton — for flute, objects, and no-input mixer (2025)</li>
+          <li>Longing — for electric guitar, microphones, and no-input mixer (2026)</li>
+        </ul>
+        <p class="grant-note">Project supported and realised with the Emerging Talent grant for Artistic Research of the Flemish Government.</p>
+        <a class="link" href="https://youtu.be/ovK7dhnKflo" target="_blank" rel="noopener">Watch →</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="work-phersu" class="view">
+    <div class="wrap">
+      <a class="back-link" data-target="works">← Works</a>
+      <div class="work-detail-media"><img src="images/works/03-phersu.png" alt="Phersu, risuonare il respiro"></div>
+      <div class="work-detail-body">
+        <p class="kicker">Music · 2024</p>
+        <h2>Phersu, risuonare il respiro</h2>
+        <p class="note">For accordion and live electronics. Performed by Arno Strauven (accordion). Antwerp, 19 June 2024.</p>
+        <p class="note">The Etruscans used the word "phersu" to indicate the masks worn during theater plays, as well as an object used "to let the voice resonate." The accordion is a unique instrument that requires and involves a complete symbiosis between player and instrument, as if they become a completely new creature in which the human and mechanic parts become indistinguishable. "Phersu, risuonare il respiro" is an audio memory of a cybernetic cycle in which breath morphs into steam and ribbons become pipes.</p>
+        <a class="link" href="https://youtu.be/74oRzhISfBM" target="_blank" rel="noopener">Watch →</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="work-undercurrent" class="view">
+    <div class="wrap">
+      <a class="back-link" data-target="works">← Works</a>
+      <div class="work-detail-media"><img src="images/works/04-undercurrent.jpg" alt="Undercurrent"></div>
+      <div class="work-detail-body">
+        <p class="kicker">Music · 2024</p>
+        <h2>Undercurrent</h2>
+        <p class="note">Electroacoustic piece for Wave Field Synthesis spatialization system. Den Haag, 1 June 2024.</p>
+        <p class="note">Undercurrent movements are often unnoticed shifts of flows within a larger system or environment. Masses of elements which hide and transform beneath the surface. Industrial chaos shaped by the underlying continuous motion of sonic elements that pulse and undulate the density of the acoustic space. Whispers that weave through the fabric of sound in a play of saturation and rarefaction, unseen yet felt.</p>
+        <a class="link" href="https://on.soundcloud.com/LP8PTajokl7ILhla5T" target="_blank" rel="noopener">Listen →</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="work-face-to-face" class="view">
+    <div class="wrap">
+      <a class="back-link" data-target="works">← Works</a>
+      <div class="work-detail-media"><img src="images/works/05-face-to-face.png" alt="Face to face with the Submarine and its shiny iron"></div>
+      <div class="work-detail-body">
+        <p class="kicker">Music · 2023</p>
+        <h2>Face to face with the Submarine and its shiny iron</h2>
+        <p class="note">For amplified ensemble. Performed by Ensemble XXI. Antwerp, 18 May 2023.</p>
+        <p class="note">The piece is inspired by Michele Mari's <em>La stiva e l'abisso</em>, which left me with the image of a submarine creature rising slowly toward the surface to take a look at the world, only to decide to descend back into the dark. I built my own instrument, the creature itself, and prepared every instrument in the ensemble to match its sonic morphology, so the whole group breathes with the same slow, pressurized motion, surfacing and sinking together.</p>
+        <a class="link" href="https://on.soundcloud.com/tr1azWXeY8ArpUB57" target="_blank" rel="noopener">Listen →</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="work-laria" class="view">
+    <div class="wrap">
+      <a class="back-link" data-target="works">← Works</a>
+      <div class="work-detail-media"><img src="images/works/06-laria.png" alt="L'aria nei giorni festivi"></div>
+      <div class="work-detail-body">
+        <p class="kicker">Music · 2023</p>
+        <h2>L'aria nei giorni festivi</h2>
+        <p class="note">For amplified ensemble and live spatialization. Performed by HERMESensemble. Antwerp, 20 March 2023.</p>
+        <p class="note">Entering a blacksmith's forge can be an intense sensory experience: heat, fumes, the sound of beaten metal constantly echoing. One could almost become disoriented.</p>
+        <p class="note">Composing "L'aria nei giorni festivi" was for me an exercise in imagination as it was a way of paying homage to Saverio Rotundo, blacksmith and artist from southern Italy. In this exercise, I imagined Rotundo during the 1970s beating irons and other urban residues in his forge. The repetitiveness of the gesture, acoustically rendered by the beating on the crotales, polarises the ensemble and resonates in the orchestration of a timbre that, evolving over time, moves through space.</p>
+        <p class="note">The work Rotundo is forging is "Malinconia dei giorni festivi", a snapshot of the heavy socio-cultural climate during the period of the Italian Austerity. Thus, the dichotomy between the frenzy of midweek life and the complete holiday lull imposed by the law becomes the cue for a formal construction whose sections develop different degrees of the sound energy organization processes: from frenetic and discontinuous to static and continuous, and vice versa.</p>
+        <p class="note">While I am in his forge, amidst tinkles, noises, and vapors, I hear u'Ciacio (that's what they used to call him in town) talking about how the objects he uses, once discarded, can through art create a new space where the spectator remains suspended and the distance separating him from the work is canceled. Hence the idea of creating through electronics an acoustic space where the amplified sounds and timbres of the ensemble are mirrored and, wandering freely, surround the audience, challenging the listening.</p>
+        <p class="note">I step out of the forge and the tinkling of metal slowly dies away.</p>
+        <a class="link" href="https://on.soundcloud.com/X5Qjf" target="_blank" rel="noopener">Listen →</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="work-time-board-mother-control" class="view">
+    <div class="wrap">
+      <a class="back-link" data-target="works">← Works</a>
+      <div class="work-detail-media"><img src="images/works/16-time-board-1.jpg" alt="Time Board Mother Control"></div>
+      <div class="work-detail-gallery">
+        <img src="images/works/16-time-board-2.jpg" alt="Time Board Mother Control — performance detail">
+        <img src="images/works/16-time-board-3.jpg" alt="Time Board Mother Control — performance detail">
+      </div>
+      <div class="work-detail-body">
+        <p class="kicker">Music · 2026</p>
+        <h2>Time Board Mother Control</h2>
+        <p class="note">Time Board Mother Control is a site-specific performance unfolding inside the Reactor space at Hectolitre. Musicians, scattered through the architecture, move like unstable signals, appearing and disappearing between resonant corners while a "mother board" redirects and contaminates their sounds. Feedback stretches across the rooms, whispers dissolve into fragile tones and circulate through hidden frequencies. The space itself answers back, transforming into a living surface of resonance and interference.</p>
+        <p class="grant-note">Project supported and realised with the Emerging Talent grant for Artistic Research of the Flemish Government.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="work-circuits-love-songs" class="view">
+    <div class="wrap">
+      <a class="back-link" data-target="works">← Works</a>
+      <div class="work-detail-media"><img src="images/works/15-circuits-love-songs.jpg" alt="Circuits' Love Songs"></div>
+      <div class="work-detail-gallery">
+        <img src="images/works/15-circuits-love-songs-2.jpg" alt="Circuits' Love Songs — performance detail">
+      </div>
+      <div class="work-detail-body">
+        <p class="kicker">Music · 2026</p>
+        <h2>Circuits' Love Songs</h2>
+        <p class="note">Circuits' Love Songs explores memory, voice, and machine agency through a custom no-input mixing board. Spoken words enter a feedback system where they blur, fragment, and re-emerge as unstable sonic traces. Rather than a fixed archive, memory becomes a shifting process shaped by interaction and transformation.</p>
+        <p class="note">The performance emerges through listening and response: a shifting negotiation between human gesture and machine behavior. Control dissolves, authorship disperses, and meaning flickers between appearing and fading.</p>
+        <p class="grant-note">Project supported and realised with the Emerging Talent grant for Artistic Research of the Flemish Government.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="work-le-masciare" class="view">
+    <div class="wrap">
+      <a class="back-link" data-target="works">← Works</a>
+      <div class="work-detail-media"><img src="images/works/09-le-masciare.jpg" alt="Le Masciàre, o lo Scongiuro della Settimana Santa"></div>
+      <div class="work-detail-gallery">
+        <img src="images/works/09-le-masciare-2.jpg" alt="Le Masciàre, o lo Scongiuro della Settimana Santa — performance detail">
+        <img src="images/works/09-le-masciare-3.jpg" alt="Le Masciàre, o lo Scongiuro della Settimana Santa — performance detail">
+      </div>
+      <div class="work-detail-body">
+        <p class="kicker">Multimedia · 2025</p>
+        <h2>Le Masciàre, o lo Scongiuro della Settimana Santa</h2>
+        <p class="note">Live audiovisual electroacoustic performance. Alberobello, 12 July 2025.</p>
+        <p class="note">Le Masciàre, or the Exorcism of Holy Week, is a live audiovisual performance that weaves together ancient rituals from Southern Italy with practices of electronic experimentation. Inspired by Ernesto de Martino's studies on southern "low magic," the performance explores the negotiation between control and chaos, rationality and instinct, the visible and the invisible.</p>
+        <p class="note">The medium of this exploration is a hybrid audio-video system at the heart of which is the no-input mixer, an unpredictable instrument capable of generating sound exclusively through feedback loops. Through the system's nonlinearity, the audiovisual experience is shaped as a contemporary rite: sounds and archival footage merge, mutate, and re-emerge as electronic textures and circuit noise, evoking symbols and impressions of a lost peasant world and creating a dialogue between memory and technology.</p>
+        <p class="note">Le Masciàre is not folklore but a living ritual, an invitation to cross the threshold of the unknown and confront unpredictability as part of the human condition.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="work-sospensione-collettiva" class="view">
+    <div class="wrap">
+      <a class="back-link" data-target="works">← Works</a>
+      <div class="work-detail-media"><img src="images/works/10-sospensione-collettiva.jpg" alt="Sospensione Collettiva #1"></div>
+      <div class="work-detail-gallery">
+        <img src="images/works/10-sospensione-collettiva-2.png" alt="Sospensione Collettiva #1 — performance detail">
+      </div>
+      <div class="work-detail-body">
+        <p class="kicker">Multimedia · 2024</p>
+        <h2>[Sospensione Collettiva #1]</h2>
+        <p class="note">Live multimedia performance, in collaboration with Daniel Lythgoe (architect/sound artist), Mario Mascolo and Younshang Bao (percussion). Antwerp, 15 June 2024.</p>
+        <p class="note">[Sospensione Collettiva #1] is a conceptual multimedia work spanning installation, performance, and instrument-making, exploring the dynamics between the individual and the collective within a shared instrumental system. Where does the identity of the self end and the reflection of the other begin?</p>
+        <p class="note">Two percussionists, hidden behind curtains at opposite ends of the space, drive a hybrid digital-analogue feedback system through their playing. The audience's movement through the room activates projections of the otherwise hidden performers, while five suspended resonant metal bodies — acting at once as instruments and as projection surfaces — weave an audio-visual counterpoint in response to both. The feedback system becomes the true instrument, dissolving the line between performer, audience, and machine.</p>
+        <a class="link" href="https://www.youtube.com/watch?v=ToZkOO-B0aM" target="_blank" rel="noopener">Trailer →</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="work-i-was-a-river" class="view">
+    <div class="wrap">
+      <a class="back-link" data-target="works">← Works</a>
+      <div class="work-detail-media"><img src="images/works/11-i-was-a-river.jpg" alt="I was a river, an elephant and a worker"></div>
+      <div class="work-detail-gallery">
+        <img src="images/works/11-i-was-a-river-2.png" alt="I was a river, an elephant and a worker — performance detail">
+        <img src="images/works/11-i-was-a-river-3.png" alt="I was a river, an elephant and a worker — performance detail">
+      </div>
+      <div class="work-detail-body">
+        <p class="kicker">Multimedia · 2023</p>
+        <h2>I was a river, an elephant and a worker</h2>
+        <p class="note">An audio-visual journey, in collaboration with Tijana Petrovic (video and text), Barbara Udovcic and Annija Kolerta (violin), Miguel Lopez (bass clarinet), and Yngwie Janseghers (electric guitar). Antwerp, 6 May 2023.</p>
+        <a class="link" href="https://vimeo.com/828095622" target="_blank" rel="noopener">Watch →</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="work-when-i-close-my-eyes" class="view">
+    <div class="wrap">
+      <a class="back-link" data-target="works">← Works</a>
+      <div class="work-detail-media"><img src="images/works/14-when-i-close-my-eyes.jpg" alt="When I close my eyes everything turns black"></div>
+      <div class="work-detail-gallery">
+        <img src="images/works/14-when-i-close-my-eyes-2.jpg" alt="When I close my eyes everything turns black — performance detail">
+        <img src="images/works/14-when-i-close-my-eyes-3.jpg" alt="When I close my eyes everything turns black — performance detail">
+      </div>
+      <div class="work-detail-body">
+        <p class="kicker">Multimedia · 2022</p>
+        <h2>When I close my eyes everything turns black</h2>
+        <p class="note">Audio-visual performance, in collaboration with BL!NDMAN Collective, Linda Jasmin Mayer, and Ljudmila Siewersky. Antwerp, August 2022.</p>
+        <p class="note">Metaphor of an intimate space as the space of dreams. A space to enter and rest.</p>
+        <p class="note">It reminds of a ship from the outside: the metaphor of a journey, as each night is a journey. It is also a symbol for Linda's journey to the Arctic.</p>
+        <p class="note">Does the body disappear when we dream?</p>
+        <p class="note">Losing control.</p>
+        <a class="link" href="https://youtu.be/X8caPFzuz_U" target="_blank" rel="noopener">Watch →</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap" style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+  <span>© <span id="yr"></span> Davide Paolillo</span>
+  <span>Composer / Sound Artist / Researcher</span>
+</footer>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  const overlay = document.getElementById('menuOverlay');
+  const menuToggle = document.getElementById('menuToggle');
+
+  function openMenu(){ overlay.classList.add('open'); }
+  function closeMenu(){ overlay.classList.remove('open'); }
+  function toggleMenu(e){
+    e.stopPropagation();
+    overlay.classList.contains('open') ? closeMenu() : openMenu();
+  }
+
+  menuToggle.addEventListener('click', toggleMenu);
+
+  // Close the popup when clicking anywhere outside of it
+  document.addEventListener('click', (e) => {
+    if (!overlay.contains(e.target) && e.target !== menuToggle && !menuToggle.contains(e.target)){
+      closeMenu();
+    }
+  });
+
+  // ============================================================
+  // HOME — animated grayscale noise, with a soft "clearing" that
+  // follows the cursor. Rendered at low internal resolution and
+  // scaled up for a grainy, film-like texture (and for performance).
+  // Click anywhere on it to open the menu.
+  // ============================================================
+  (function initNoise(){
+    const canvas = document.getElementById('homeCanvas');
+    const ctx = canvas.getContext('2d', { alpha:false });
+
+    // Internal render resolution — lower = coarser grain, better perf.
+    const SCALE = 0.22;
+    let w = 0, h = 0, lowW = 0, lowH = 0;
+    let imageData, buffer;
+
+    let mouseX = -9999, mouseY = -9999; // off-screen until user moves
+    let targetX = mouseX, targetY = mouseY;
+
+    function resize(){
+      w = canvas.clientWidth;
+      h = canvas.clientHeight;
+      canvas.width = w;
+      canvas.height = h;
+      lowW = Math.max(1, Math.floor(w * SCALE));
+      lowH = Math.max(1, Math.floor(h * SCALE));
+      imageData = ctx.createImageData(lowW, lowH);
+      buffer = imageData.data;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    function setPointer(x, y){
+      const rect = canvas.getBoundingClientRect();
+      targetX = (x - rect.left) * SCALE;
+      targetY = (y - rect.top) * SCALE;
+    }
+    // Listen on the window (not just the canvas) so the "clearing" keeps
+    // tracking the cursor even while it's over the name or menu button,
+    // which sit on top of the canvas as fixed elements.
+    window.addEventListener('mousemove', e => setPointer(e.clientX, e.clientY));
+    window.addEventListener('touchmove', e => {
+      if (e.touches[0]) setPointer(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive:true });
+    document.documentElement.addEventListener('mouseleave', () => { targetX = -9999; targetY = -9999; });
+
+    const RADIUS = 46;       // reach of the cursor "clearing", in low-res pixels
+    const BASE_MIN = 18;     // darkest grain value
+    const BASE_MAX = 70;     // lightest grain value (kept low = mostly dark)
+    const CLEAR_BOOST = 150; // extra brightness at the cursor center
+
+    function frame(){
+      // ease the tracked pointer toward the real one for a soft trailing feel
+      mouseX += (targetX - mouseX) * 0.12;
+      mouseY += (targetY - mouseY) * 0.12;
+
+      for (let y = 0; y < lowH; y++){
+        for (let x = 0; x < lowW; x++){
+          const i = (y * lowW + x) * 4;
+          let v = BASE_MIN + Math.random() * (BASE_MAX - BASE_MIN);
+
+          const dx = x - mouseX, dy = y - mouseY;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < RADIUS){
+            const falloff = 1 - (dist / RADIUS);
+            v += CLEAR_BOOST * falloff * falloff * (0.6 + Math.random()*0.4);
+          }
+          v = Math.min(255, v);
+
+          buffer[i] = v; buffer[i+1] = v; buffer[i+2] = v; buffer[i+3] = 255;
+        }
+      }
+      ctx.putImageData(imageData, 0, 0);
+      // scale the low-res buffer up to fill the canvas
+      ctx.imageSmoothingEnabled = true;
+      ctx.drawImage(canvas, 0, 0, lowW, lowH, 0, 0, w, h);
+
+      requestAnimationFrame(frame);
+    }
+
+    // draw the first low-res pass into an offscreen step, then start the loop
+    requestAnimationFrame(frame);
+  })();
+
+  // ============================================================
+  // AMBIENT BACKGROUND NOISE — for About / Works / Research / Contact.
+  // Deliberately calmer than the home noise: a narrow tonal range
+  // close to the page's own background color (subtle grain, not
+  // stark static), and it only redraws a few times per second
+  // instead of every frame, with no mouse interaction. Runs
+  // continuously behind the fixed content regardless of which
+  // section is showing.
+  // ============================================================
+  (function initAmbientNoise(){
+    const canvas = document.getElementById('bgNoiseCanvas');
+    const ctx = canvas.getContext('2d', { alpha:false });
+
+    const SCALE = 0.12;
+    let w = 0, h = 0, lowW = 0, lowH = 0, imageData, buffer;
+
+    function resize(){
+      w = window.innerWidth;
+      h = window.innerHeight;
+      canvas.width = w;
+      canvas.height = h;
+      lowW = Math.max(1, Math.floor(w * SCALE));
+      lowH = Math.max(1, Math.floor(h * SCALE));
+      imageData = ctx.createImageData(lowW, lowH);
+      buffer = imageData.data;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Narrow band close to the --bg color (approx 250,250,248) so this
+    // reads as quiet paper grain rather than high-contrast static.
+    const MIN = 237, MAX = 254;
+
+    const FRAME_SKIP = 7; // redraw roughly every 7th frame — slow and calm
+    let tick = 0;
+
+    function frame(){
+      tick++;
+      if (tick % FRAME_SKIP === 0){
+        for (let y = 0; y < lowH; y++){
+          for (let x = 0; x < lowW; x++){
+            const i = (y * lowW + x) * 4;
+            const v = MIN + Math.random() * (MAX - MIN);
+            buffer[i] = v; buffer[i+1] = v; buffer[i+2] = v; buffer[i+3] = 255;
+          }
+        }
+        ctx.putImageData(imageData, 0, 0);
+        ctx.imageSmoothingEnabled = true;
+        ctx.drawImage(canvas, 0, 0, lowW, lowH, 0, 0, w, h);
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  })();
+
+  function showView(id){
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    closeMenu();
+    window.scrollTo(0,0);
+  }
+
+  document.querySelectorAll('[data-target]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      showView(el.dataset.target);
+    });
+  });
+</script>
+
+</body>
+</html>
