@@ -1057,11 +1057,28 @@
     requestAnimationFrame(frame);
   })();
 
-  function showView(id){
+  // ============================================================
+  // VIEW ROUTING + BROWSER HISTORY
+  // Every section swap pushes a real history entry (via the hash),
+  // so the browser's Back button steps back through the site's own
+  // pages first — and only leaves to whatever came before the site
+  // (e.g. a Google results page) once that internal history runs out.
+  // ============================================================
+  const viewIds = Array.from(document.querySelectorAll('.view')).map(v => v.id);
+
+  function showView(id, push = true){
+    if (!viewIds.includes(id)) id = 'home';
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     closeMenu();
     window.scrollTo(0,0);
+
+    if (push){
+      const hash = id === 'home' ? '' : '#' + id;
+      if ((location.hash || '') !== hash){
+        history.pushState({ view: id }, '', hash || location.pathname + location.search);
+      }
+    }
   }
 
   document.querySelectorAll('[data-target]').forEach(el => {
@@ -1070,6 +1087,24 @@
       showView(el.dataset.target);
     });
   });
+
+  // Back/forward: restore whichever view the browser is pointing at,
+  // without pushing a new entry (that would just fight the back button).
+  window.addEventListener('popstate', (e) => {
+    const id = (e.state && e.state.view) || (location.hash ? location.hash.slice(1) : 'home');
+    showView(id, false);
+  });
+
+  // On first load, replace this single history entry with a "home"
+  // state (or whichever view the URL's hash points to) so it doesn't
+  // push a duplicate entry — this is what lets the very next Back
+  // press land the visitor on the homepage instead of skipping past it.
+  (function initHistory(){
+    const startId = location.hash ? location.hash.slice(1) : 'home';
+    const id = viewIds.includes(startId) ? startId : 'home';
+    history.replaceState({ view: id }, '', id === 'home' ? (location.pathname + location.search) : location.hash);
+    if (id !== 'home') showView(id, false);
+  })();
 </script>
 
 </body>
