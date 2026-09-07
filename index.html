@@ -192,7 +192,7 @@
     display:inline-block; font-size:0.78rem; text-transform:uppercase;
     letter-spacing:0.06em; color:var(--accent); border-bottom:1px solid var(--accent);
   }
-  .work-detail-body .grant-note{
+  .work-detail-body .grant-note, .grant-note{
     font-size:0.82rem; font-style:italic; color:var(--ink-soft);
     margin:-8px 0 22px;
   }
@@ -269,11 +269,205 @@
   .research-item .yr{ flex:0 0 90px; color:var(--ink-soft); font-size:0.85rem; padding-top:1px; }
   .research-item .body strong{ font-weight:600; }
   .research-item .body .venue{ color:var(--ink-soft); font-size:0.9rem; }
+  .research-item.cat-row{
+    cursor:pointer; margin:0 -16px; padding-left:16px; padding-right:16px;
+    transition:background .2s ease;
+  }
+  .research-item.cat-row:hover{ background:var(--line); }
+  .cat-arrow{ color:var(--ink-soft); transition:color .2s ease, transform .2s ease; display:inline-block; }
+  .research-item.cat-row:hover .cat-arrow{ color:var(--accent); transform:translateX(3px); }
   .status-pill{
     display:inline-block; margin-left:10px; font-size:0.68rem; letter-spacing:0.06em;
     text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
     padding:1px 7px; border-radius:2px; vertical-align:middle;
   }
+
+  /* ============================================================
+     CATALOGUE OF INTERACTIONS
+     Sub-project of the Research section: per-session documentation
+     of acoustic-instrument × no-input-mixer interaction studies.
+     ============================================================ */
+  #catalogue p, #catalogue-s01 p, #catalogue-s02 p, #catalogue-s03 p, #catalogue-s04 p{ text-align:justify; }
+  .cat-session-list{ display:flex; flex-wrap:wrap; gap:2px; margin-top:26px; }
+  .cat-session-card{
+    background:var(--bg); padding:26px 28px; cursor:pointer; display:block;
+    flex:1 1 100%; box-shadow:0 0 0 1px var(--line) inset;
+    transition:background .2s ease;
+  }
+  .cat-session-card:hover{ background:var(--line); }
+  .cat-session-card .id{
+    font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent); margin-bottom:6px;
+  }
+  .cat-session-card h3{
+    font-family:var(--display); font-style:italic; font-weight:400; font-size:1.15rem; margin-bottom:6px;
+  }
+  .cat-session-card p{ font-size:0.88rem; color:var(--ink-soft); max-width:64ch; }
+  .cat-session-card .meta-line{
+    margin-top:10px; font-size:0.75rem; color:var(--ink-soft);
+  }
+  /* Sessions not yet written up: shown in the list for reference, but not
+     a link — no data-target, so the global click handler skips them. */
+  .cat-session-card--pending{ cursor:default; opacity:0.72; }
+  .cat-session-card--pending:hover{ background:var(--bg); }
+  .cat-session-card .status-badge{
+    display:inline-block; margin-top:12px; font-size:0.66rem; letter-spacing:0.08em;
+    text-transform:uppercase; color:var(--accent); border:1px solid var(--accent); padding:4px 10px;
+  }
+
+  .cat-meta{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:16px 28px;
+    margin:26px 0 30px; padding:20px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  }
+  .cat-meta .label{
+    display:block; font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--ink-soft); margin-bottom:4px;
+  }
+  .cat-meta .value{ font-size:0.9rem; }
+
+  .cat-jumpnav{
+    border:1px solid var(--line); margin:0 0 46px; background:var(--bg);
+    position:sticky; top:86px; z-index:50;
+  }
+  .cat-jumpnav summary{
+    cursor:pointer; list-style:none; padding:16px 20px;
+    font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink);
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .cat-jumpnav summary::-webkit-details-marker{ display:none; }
+  .cat-jumpnav summary::after{
+    content:"▾"; color:var(--ink-soft); transition:transform .2s ease; margin-left:12px;
+  }
+  .cat-jumpnav[open] summary::after{ transform:rotate(180deg); }
+  .cat-jumpnav summary:hover{ color:var(--accent); }
+  .cat-jumpnav nav{
+    display:flex; flex-wrap:wrap; gap:10px 18px; font-size:0.72rem;
+    padding:14px 20px 18px; border-top:1px solid var(--line);
+  }
+  .cat-jumpnav a{ color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.06em; cursor:pointer; }
+  .cat-jumpnav a:hover{ color:var(--accent); }
+
+  /* Side rail — replaces the "Jump to" bar on wide desktop viewports only,
+     where there's genuine clear space beside the centered content column
+     (this site's --max/--gutter tokens don't leave room for it any
+     narrower, which is exactly why phones/tablets/laptops keep the
+     collapsible bar above instead). Always reachable: position:fixed
+     keeps it in view for the whole scroll, not just at the page top. */
+  .cat-siderail{ display:none; }
+  @media (min-width:1600px){
+    .cat-jumpnav{ display:none; }
+    .cat-siderail{
+      display:flex; flex-direction:column; gap:9px;
+      position:fixed; left:28px; top:50%; transform:translateY(-50%);
+      z-index:40; width:max-content; max-width:280px;
+      background:var(--bg); border:1px solid var(--line);
+      padding:16px 18px; box-shadow:0 8px 24px rgba(23,22,20,0.08);
+    }
+    .cat-siderail .rail-label{
+      font-size:0.62rem; letter-spacing:0.09em; text-transform:uppercase;
+      color:var(--ink-soft); margin-bottom:2px; padding-bottom:8px;
+      border-bottom:1px solid var(--line);
+    }
+    .cat-siderail a{
+      display:block; font-size:0.7rem; letter-spacing:0.04em; text-transform:uppercase;
+      color:var(--ink-soft); cursor:pointer; transition:color .2s ease;
+      line-height:1.4;
+    }
+    .cat-siderail a:hover{ color:var(--accent); }
+  }
+
+  .cat-section{ margin-bottom:60px; scroll-margin-top:24px; }
+  .cat-section > h3{
+    font-family:var(--display); font-style:italic; font-weight:400;
+    font-size:1.4rem; margin-bottom:4px;
+  }
+  .cat-section .cat-kicker{
+    font-size:0.72rem; letter-spacing:0.09em; text-transform:uppercase;
+    color:var(--ink-soft); margin-bottom:18px;
+  }
+  .cat-section h4{ font-size:1rem; font-weight:600; margin:26px 0 6px; }
+  .cat-section p{ font-size:0.92rem; color:var(--ink-soft); max-width:76ch; margin-bottom:14px; }
+  .cat-section p strong{ color:var(--ink); font-weight:600; }
+  .cat-note{
+    font-size:0.8rem; font-style:italic; color:var(--ink-soft); max-width:76ch;
+    border-left:2px solid var(--line); padding-left:14px; margin:16px 0 22px;
+  }
+
+  .cat-table-wrap{ overflow-x:auto; margin:16px 0 28px; }
+  .cat-table{ width:100%; border-collapse:collapse; font-size:0.82rem; min-width:480px; }
+  .cat-table th, .cat-table td{
+    text-align:left; padding:9px 14px 9px 0; border-bottom:1px solid var(--line); vertical-align:top;
+  }
+  .cat-table th{
+    font-size:0.66rem; letter-spacing:0.07em; text-transform:uppercase;
+    color:var(--ink-soft); font-weight:500; white-space:nowrap;
+  }
+
+  .cat-img-grid{
+    display:flex; flex-wrap:wrap; justify-content:center; gap:2px; margin:18px 0 8px;
+  }
+  .cat-img-grid figure{ flex:1 1 340px; background:var(--bg); box-shadow:0 0 0 1px var(--line) inset; }
+  /* Overview scatter-comparison figures are single-image rows, so the
+     default flex-grow:1 lets them stretch to the full content width —
+     capped here so they read as a chart, not a poster. */
+  .cat-img-grid--overview figure{ flex:0 1 auto; width:100%; max-width:560px; }
+  /* Single-excerpt spectrogram grids: fixed 2-up, same fix as the works grid —
+     tiles don't grow to fill a short row, so a trailing odd one centers
+     itself instead of stretching full-width. */
+  .cat-img-grid--pairs figure{ flex:0 0 calc(50% - 1px); }
+  .cat-img-grid img{ width:100%; display:block; }
+  .cat-img-grid figcaption{ font-size:0.72rem; color:var(--ink-soft); padding:8px 12px 12px; }
+
+  .cat-setup-photo{ margin:18px 0 28px; box-shadow:0 0 0 1px var(--line) inset; }
+  .cat-setup-photo img{ width:100%; display:block; }
+  .cat-setup-photo figcaption{ font-size:0.72rem; color:var(--ink-soft); padding:8px 12px 12px; }
+
+  .cat-gesture-grid{
+    display:flex; flex-wrap:wrap; justify-content:center; gap:2px; margin:18px 0 8px;
+  }
+  .cat-gesture{
+    background:var(--bg); padding:18px 20px; flex:0 0 calc(50% - 1px);
+    box-shadow:0 0 0 1px var(--line) inset;
+  }
+  .cat-gesture img{
+    width:100%; display:block; margin-bottom:12px; box-shadow:0 0 0 1px var(--line);
+  }
+  .cat-gesture h5{ font-size:0.92rem; font-weight:600; margin-bottom:4px; }
+  .cat-gesture .ts{
+    display:block; font-size:0.68rem; color:var(--accent); text-transform:uppercase;
+    letter-spacing:0.05em; margin-bottom:8px;
+  }
+  .cat-gesture .verdict{
+    display:block; font-size:0.82rem; font-weight:600; color:var(--ink);
+    margin-bottom:8px; line-height:1.4;
+  }
+  .cat-gesture p{ font-size:0.82rem; margin-bottom:12px; }
+  .cat-gesture audio{ width:100%; height:32px; accent-color:var(--accent); }
+  @media (max-width:560px){
+    .cat-gesture{ flex:1 1 100%; }
+  }
+
+  .cat-corpus-note{ font-size:0.78rem; color:var(--ink-soft); margin:-6px 0 20px; }
+
+  .cat-performer-note{
+    background:rgba(166,50,30,0.05); border-left:3px solid var(--accent);
+    padding:16px 22px; margin:16px 0 20px;
+  }
+  .cat-performer-note .label{
+    display:block; font-size:0.68rem; letter-spacing:0.07em; text-transform:uppercase;
+    color:var(--ink-soft); margin-bottom:8px;
+  }
+  .cat-performer-note p{ font-size:0.92rem; color:var(--ink); max-width:76ch; margin-bottom:0; line-height:1.5; }
+
+  .cat-quick{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px 26px;
+    background:rgba(166,50,30,0.05); border-left:3px solid var(--accent);
+    padding:18px 22px; margin:16px 0 26px;
+  }
+  .cat-quick .label{
+    display:block; font-size:0.64rem; letter-spacing:0.09em; text-transform:uppercase;
+    color:var(--ink-soft); margin-bottom:4px;
+  }
+  .cat-quick .value{ font-size:0.86rem; }
 
   /* ============================================================
      ABOUT
@@ -610,10 +804,10 @@
             <div class="venue">Toolbox</div>
           </div>
         </div>
-        <div class="research-item">
+        <div class="research-item cat-row" data-target="catalogue">
           <div class="yr">2026</div>
           <div class="body">
-            <strong>No-input/Some-inputs, a catalogue of interactive possibilities</strong>
+            <strong>No-input/Some-inputs, a catalogue of interactive possibilities <span class="cat-arrow">→</span></strong>
             <div class="venue">Catalogue</div>
           </div>
         </div>
@@ -893,6 +1087,2174 @@
     </div>
   </section>
 
+  <!-- CATALOGUE OF INTERACTIONS — hub -->
+  <section id="catalogue" class="view">
+    <div class="wrap">
+      <a class="back-link" data-target="research">← Research</a>
+      <div class="section-head">
+        <p class="kicker">Doctoral Research · Catalogue</p>
+        <h2>No-input/Some-inputs — a catalogue of interactive possibilities</h2>
+      </div>
+      <p class="research-intro">
+        A growing, session-by-session documentation of how different acoustic instruments and playing techniques interact with the no-input mixer's feedback loops. Each session pairs one instrument with a fixed mixer setup and a set of playing techniques, then analyses the recordings for recurring resonant behaviour: which frequencies the feedback loop keeps returning to, how it responds once a gesture stops, and what a given technique or material changes about that response.
+      </p>
+      <p class="research-intro">
+        Every session below documents its own setup (routing, gain, EQ), its instrument techniques, and for each technique gives a short analytical overview, spectrogram/feature images, and audio examples of the individual gestures discussed.
+      </p>
+      <p class="grant-note">Project supported and realised with the Emerging Talent grant for Artistic Research of the Flemish Government.</p>
+
+      <div class="cat-session-list">
+        <a class="cat-session-card" data-target="catalogue-s01">
+          <div class="id">Session 01</div>
+          <h3>Cymbal</h3>
+          <div class="meta-line">14 Mar 2026 · Studio Hectolitre</div>
+        </a>
+        <a class="cat-session-card" data-target="catalogue-s02">
+          <div class="id">Session 02</div>
+          <h3>Electric Guitar</h3>
+          <div class="meta-line">30 Mar 2026 · Studio Hectolitre</div>
+        </a>
+        <a class="cat-session-card" data-target="catalogue-s03">
+          <div class="id">Session 03</div>
+          <h3>Flute</h3>
+          <div class="meta-line">23 Apr 2026 · Studio Hectolitre</div>
+        </a>
+        <a class="cat-session-card" data-target="catalogue-s04">
+          <div class="id">Session 04</div>
+          <h3>Clarinet</h3>
+          <div class="meta-line">20 May 2026 · Studio Hectolitre</div>
+        </a>
+        <div class="cat-session-card cat-session-card--pending">
+          <div class="id">Session 05</div>
+          <h3>Double Bass</h3>
+          <div class="meta-line">3 Jun 2026 · Studio Hectolitre</div>
+          <span class="status-badge">Analysis in Progress</span>
+        </div>
+        <div class="cat-session-card cat-session-card--pending">
+          <div class="id">Session 06</div>
+          <h3>Accordion</h3>
+          <div class="meta-line">4 Jun 2026 · Studio Hectolitre</div>
+          <span class="status-badge">Analysis in Progress</span>
+        </div>
+        <div class="cat-session-card cat-session-card--pending">
+          <div class="id">Session 07</div>
+          <h3>Violin</h3>
+          <div class="meta-line">26 Jun 2026 · Studio Hectolitre</div>
+          <span class="status-badge">Analysis in Progress</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATALOGUE OF INTERACTIONS — Session 01: Cymbal -->
+  <section id="catalogue-s01" class="view">
+    <div class="wrap">
+      <a class="back-link" data-target="catalogue">← Catalogue</a>
+      <div class="section-head">
+        <p class="kicker">Catalogue of Interactions · Session 01</p>
+        <h2>Cymbal</h2>
+      </div>
+
+      <div class="cat-meta">
+        <div><span class="label">Date</span><span class="value">14 Mar 2026</span></div>
+        <div><span class="label">Location</span><span class="value">Studio Hectolitre</span></div>
+        <div><span class="label">Performer</span><span class="value">Elliott Harrison</span></div>
+        <div><span class="label">Instrument</span><span class="value">Percussion — cymbal (crash 16″)</span></div>
+        <div><span class="label">Mixer</span><span class="value">Mackie 1202-VLZ PRO</span></div>
+        <div><span class="label">Session type</span><span class="value">Free improvisation / sampling session</span></div>
+        <div><span class="label">Duration</span><span class="value">2h</span></div>
+        <div><span class="label">Research focus</span><span class="value">Inharmonic / rhythmical instrument interaction with the NIM</span></div>
+      </div>
+
+      <p class="research-intro">
+        The session explores how an inharmonic instrument with a very rich spectrum, like the cymbal, offers interaction possibilities with the feedback loops of the no-input mixer. It focuses on the instrumental possibilities to sustain complex tones and create rhythmical patterns, and on how those characteristics can blend, contrast, or morph the mixer's own behaviours.
+      </p>
+
+      <details class="cat-jumpnav">
+        <summary>Jump to</summary>
+        <nav>
+          <a data-target="catalogue-s01">↑ Top</a>
+          <a onclick="document.getElementById('cat-s01-setup').scrollIntoView({behavior:'smooth'})">Setup</a>
+          <a onclick="document.getElementById('cat-s01-overview').scrollIntoView({behavior:'smooth'})">General Overview</a>
+          <a onclick="document.getElementById('cat-s01-brushes').scrollIntoView({behavior:'smooth'})">Brushes</a>
+          <a onclick="document.getElementById('cat-s01-mediummallets').scrollIntoView({behavior:'smooth'})">Medium Mallets</a>
+          <a onclick="document.getElementById('cat-s01-softmallets').scrollIntoView({behavior:'smooth'})">Soft Mallets</a>
+          <a onclick="document.getElementById('cat-s01-stick').scrollIntoView({behavior:'smooth'})">Drum Sticks</a>
+          <a onclick="document.getElementById('cat-s01-guiro').scrollIntoView({behavior:'smooth'})">Guiro</a>
+          <a onclick="document.getElementById('cat-s01-bow').scrollIntoView({behavior:'smooth'})">Bow</a>
+          <a onclick="document.getElementById('cat-s01-improv').scrollIntoView({behavior:'smooth'})">Final Improvisation as Synthesis</a>
+        </nav>
+      </details>
+
+      <nav class="cat-siderail">
+        <span class="rail-label">Jump to</span>
+        <a data-target="catalogue-s01">↑ Top</a>
+        <a onclick="document.getElementById('cat-s01-setup').scrollIntoView({behavior:'smooth'})">Setup</a>
+        <a onclick="document.getElementById('cat-s01-overview').scrollIntoView({behavior:'smooth'})">General Overview</a>
+        <a onclick="document.getElementById('cat-s01-brushes').scrollIntoView({behavior:'smooth'})">Brushes</a>
+        <a onclick="document.getElementById('cat-s01-mediummallets').scrollIntoView({behavior:'smooth'})">Medium Mallets</a>
+        <a onclick="document.getElementById('cat-s01-softmallets').scrollIntoView({behavior:'smooth'})">Soft Mallets</a>
+        <a onclick="document.getElementById('cat-s01-stick').scrollIntoView({behavior:'smooth'})">Drum Sticks</a>
+        <a onclick="document.getElementById('cat-s01-guiro').scrollIntoView({behavior:'smooth'})">Guiro</a>
+        <a onclick="document.getElementById('cat-s01-bow').scrollIntoView({behavior:'smooth'})">Bow</a>
+        <a onclick="document.getElementById('cat-s01-improv').scrollIntoView({behavior:'smooth'})">Final Improvisation as Synthesis</a>
+      </nav>
+
+      <!-- SETUP -->
+      <div class="cat-section" id="cat-s01-setup">
+        <h3>Setup</h3>
+        <p class="cat-kicker">Amplification &amp; No-Input Mixer Configuration</p>
+
+        <p>The cymbal is amplified with a condenser mic (Rode NT5) into Channel 2, summed alongside the mixer's own no-input channels so the acoustic sound and the feedback loop share the same signal path.</p>
+
+        <div class="cat-table-wrap">
+          <table class="cat-table">
+            <thead><tr><th>Output</th><th>Input</th></tr></thead>
+            <tbody>
+              <tr><td>MainL</td><td>Channel 1 (XLR)</td></tr>
+              <tr><td>Instrument</td><td>Channel 2 (XLR) - condenser Mic</td></tr>
+              <tr><td>Static noise</td><td>Channel 5/6</td></tr>
+              <tr><td>Channel 3 (from channel insert tip-send)</td><td>Channel 3 (Line)</td></tr>
+              <tr><td>Aux 1</td><td>Channel 4 (Line)</td></tr>
+              <tr><td>Aux 2</td><td>Channel 5/6 (Line)</td></tr>
+              <tr><td>Phones</td><td>Channel 7/8 (Line)</td></tr>
+              <tr><td>Tape out (used as output) (RCA to jack)</td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Gain &amp; EQ</h4>
+        <div class="cat-table-wrap">
+          <table class="cat-table">
+            <thead><tr><th>Channel</th><th>Gain (initial)</th><th>EQ</th></tr></thead>
+            <tbody>
+              <tr><td>Ch 1</td><td>+30dB (XLR)</td><td>focus on Low band</td></tr>
+              <tr><td>Ch 1</td><td>+15dB (XLR)</td><td>Variable, depending on the evolution of the feedback</td></tr>
+              <tr><td>Ch 3</td><td>+25dB (Line)</td><td>Equally distributed</td></tr>
+              <tr><td>Ch 4</td><td>+25dB (Line)</td><td>HPF + focus on the Mid Bands</td></tr>
+              <tr><td>Ch 5/6</td><td>Stereo channel (Line)</td><td>Variable, depending on the evolution of the feedback</td></tr>
+              <tr><td>Ch 7/8</td><td>Stereo channel (Line)</td><td>Equally distributed</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="cat-note">Gain range depends on input type: 0dB to +60dB using XLR, using Line there is a 15dB attenuation up to 45dB at the knob fully up; the stereo channel runs from off +10dBV to +4dBU (no knobs).</p>
+
+        <h4>Control techniques</h4>
+        <div class="cat-table-wrap">
+          <table class="cat-table">
+            <thead><tr><th>Gesture</th><th>Sonic effect</th></tr></thead>
+            <tbody>
+              <tr><td>Mixing signals into the Aux channel</td><td>Three effect types depending on feedback state and what's mixed in: an abrupt cut of the feedback, a gradual blend between acoustic and electronic sound, or a morph of the feedback taking on characteristics of the acoustic sound mixed with it.</td></tr>
+              <tr><td>Gain changes</td><td>On the pure feedback channel, changes its nature (sustained tone, pulsar, etc.); on the instrument's channel, changes how strongly the acoustic sound interacts with the feedback: high values mean more interaction, low values less.</td></tr>
+              <tr><td>EQ adjustment</td><td>Morphs the feedback's nature the same way gain does, while also filtering the different spectral regions of the acoustic instrument.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Instrument techniques</h4>
+        <div class="cat-table-wrap">
+          <table class="cat-table">
+            <thead><tr><th>Technique</th><th>Category</th><th>Description</th><th>Sonic result</th></tr></thead>
+            <tbody>
+              <tr><td>Soft mallet roll</td><td>Conventional</td><td>Long gesture on both sides of the instrument, usually with a dynamic crescendo/decrescendo.</td><td>Slow opening of the instrument's rich spectrum; can be left to vibrate or dampened.</td></tr>
+              <tr><td>Soft mallet strike (f/p)</td><td>Conventional</td><td>Simple stroke with the tip of the mallet.</td><td>Sharp attack, highly inharmonic sound.</td></tr>
+              <tr><td>Drumstick roll</td><td>Conventional</td><td>Same long gesture as the soft mallet roll.</td><td>Same slow spectral opening, but with sharper attack transients.</td></tr>
+              <tr><td>Drumstick strike (f/p)</td><td>Conventional</td><td>Simple stroke with the tip of the stick.</td><td>Sharp attack, highly inharmonic sound.</td></tr>
+              <tr><td>Brushes (roll and strike)</td><td>Conventional</td><td>Similar to the mallet roll.</td><td>Opens the high end of the spectrum, with added small attack transients.</td></tr>
+              <tr><td>Bowing</td><td>Extended</td><td>Rub the bow along the edge; can be combined with damping the instrument at different points.</td><td>Sustains long tones; bow position can emphasise different partials or a harmonic cluster.</td></tr>
+              <tr><td>Nail rubbing</td><td>Extended</td><td>Rub the body of the instrument with the tip of a nail.</td><td>Similar result to bowing but with more isolated partials and very sharp attack transients.</td></tr>
+              <tr><td>Ribbed mallet (guiro stroke)</td><td>Extended</td><td>Side stroke along the edge.</td><td>Highly inharmonic, a series of sharp attack transients from the mallet's ribs.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="cat-note">The systematic recordings below cover brushes, medium mallets, soft mallets, drum sticks, bowing, and the ribbed-mallet/guiro technique. Nail rubbing wasn't given its own dedicated take, it appears instead inside the full improvisation, alongside guiro-style scraping, as one of the bright, noisy passages discussed there.</p>
+
+        <h4>Analysis method</h4>
+        <p>Every recording below was processed the same way: onset detection (spectral-flux), spectral-feature extraction (centroid, bandwidth, flatness, RMS) on a 2048-sample STFT, segmentation with clustering into acoustic classes and spectral-peak tracking to find recurring "attractor" frequencies, and isolated-onset case studies to see what the feedback loop does once excited. Two recordings (guiro, bow) use continuous rather than discrete excitation, so their analysis leans more on the overall energy trend across the take than on onset-triggered decay curves.</p>
+      </div>
+
+      <!-- GENERAL OVERVIEW & SYNTHESIS -->
+      <div class="cat-section" id="cat-s01-overview">
+        <h3>General Overview &amp; Synthesis</h3>
+        <p class="cat-kicker">The cymbal and the no-input mixer</p>
+
+        <p>The session was structured in two stages: first, systematic gesture-by-gesture studies isolating one mallet or technique at a time; then a full improvisation combining everything into a single continuous performance. Total: 37 minutes 40 seconds, 5,137 detected onsets, eight recordings, six excitation types.</p>
+
+        <div class="cat-table-wrap">
+          <table class="cat-table">
+            <thead><tr><th>#</th><th>Recording</th><th>Duration</th><th>Onsets</th></tr></thead>
+            <tbody>
+              <tr><td>—</td><td>Final Improvisation</td><td>9:42</td><td>1,125</td></tr>
+              <tr><td>01</td><td>Brushes</td><td>3:53</td><td>497</td></tr>
+              <tr><td>02</td><td>Medium Mallets</td><td>2:33</td><td>376</td></tr>
+              <tr><td>03a</td><td>Soft Mallets Pt.1</td><td>6:16</td><td>329</td></tr>
+              <tr><td>03b</td><td>Soft Mallets Pt.2</td><td>3:56</td><td>997</td></tr>
+              <tr><td>04</td><td>Drum Sticks</td><td>3:37</td><td>559</td></tr>
+              <tr><td>05</td><td>Guiro</td><td>3:02</td><td>206</td></tr>
+              <tr><td>06</td><td>Bow</td><td>4:40</td><td>1,048</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>1. The instrument's resonant fingerprint</h4>
+        <p>While the cymbal has a very wide spectrum, this specific no-input mixer setup keeps returning to the same handful of resonant frequencies, almost regardless of what is exciting the cymbal. Tracking the strongest spectral peak in every analysis frame across all eight recordings shows  six frequencies that recur, sometimes dominant and sometimes secondary, in every single recording: <strong>110Hz, 185Hz, 320Hz, 400Hz, 585Hz, 820Hz.</strong></p>
+        <div class="cat-img-grid cat-img-grid--overview">
+          <figure><img src="images/research/s01/overview/technique-comparison.jpg" loading="lazy" alt="Technique comparison across all eight recordings"><figcaption>Centroid / flatness / onset-rate comparison across all eight recordings</figcaption></figure>
+        </div>
+        <p>Every recording shows one of the six bands, and each band is the strongest lock-in in at least one recording: 110Hz emerges in Soft Mallets Pt.2, 185Hz emerges in Bow, 320Hz emerges in Drumsticks, 400Hz emerges in Medium Mallets, 585Hz emerges Guiro, and 820Hz emerges in Brushes. The frequencies aren't in a harmonic series (the ratios between neighbours run roughly 1.2–1.8), arguing for <strong>separate, independent resonant modes of the mixer's system itself</strong>, which show up whether the cymbal is bowed, brushed, struck, or scraped.</p>
+
+        <h4>2. A typology of feedback behaviours</h4>
+        <p>Across all the isolated-decay case studies documented below, the same handful of qualitatively distinct behaviours keep recurring:</p>
+        <div class="cat-table-wrap">
+          <table class="cat-table">
+            <thead><tr><th>Behaviour</th><th>What it looks like</th><th>Clearest examples</th></tr></thead>
+            <tbody>
+              <tr><td>Regenerative buildup</td><td>A quiet, sometimes barely-audible touch grows on its own into a loud, sustained resonance</td><td>Soft Mallets Pt.2 (t≈4.8s); Medium Mallets (t≈90s); Guiro (t≈72s)</td></tr>
+              <tr><td>Frequency-selective sustain</td><td>One narrow band holds almost flat for many seconds while bands around it decay normally</td><td>Medium Mallets (t≈117s); Soft Mallets Pt.1 (t≈187s); Bow (t≈30.5s)</td></tr>
+              <tr><td>Narrowband lock-in</td><td>A single band jumps up fast, holds a flat plateau, then releases abruptly</td><td>Brushes (t≈38s, 500Hz–1kHz plateau for 9s)</td></tr>
+              <tr><td>Synchronized dip-and-recovery (limit cycle)</td><td>Every band drops together, then rebuilds together, with no new input</td><td>Bow (t≈98.7s); Final Improvisation (t≈456s); Soft Mallets Pt.2 (t≈76.7s)</td></tr>
+              <tr><td>Spontaneous collapse</td><td>A stable hold ends in a sudden, steep crash with nothing triggering it</td><td>Medium Mallets (t≈140s)</td></tr>
+              <tr><td>Irregular pulsing / breathing</td><td>Repeated rise-and-fall cycles that never settle into either decay or a flat hold</td><td>Final Improvisation (t≈251s); Guiro (t≈28s); Bow (t≈217s)</td></tr>
+              <tr><td>Cumulative buildup across a whole take</td><td>Only with continuous excitation: overall energy climbs steadily across many minutes rather than resetting after each gesture</td><td>Guiro (≈8× RMS rise over 3 minutes); Bow (similar rise over ~200s)</td></tr>
+              <tr><td>Full-spectrum broadband sustain</td><td>Nearly every band holds flat simultaneously for an unusually long window</td><td>Guiro (t≈145s, 28.7s clean); Soft Mallets Pt.2 (t≈76.7s, 19s clean)</td></tr>
+              <tr><td>Clean natural decay (contrast case)</td><td>Ordinary, monotonic fade with no regeneration</td><td>Brushes (t≈189s); Soft Mallets Pt.1 (t≈305s); Drum Sticks (t≈166s); Bow (t≈270s)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>No recording shows only one of these; every entry has at least two or three. The two continuous-excitation recordings (guiro, bow) are the only ones to show the cumulative-buildup pattern: a struck gesture delivers one burst of energy and leaves the feedback to do whatever it does next, while continuous friction keeps re-supplying energy at a steady rate.</p>
+
+        <h4>3. How technique and material shape the interaction</h4>
+        <p><strong>Discrete strikes vs. continuous excitation:</strong> This is a structural split in this session, as it directly affects the degree of interdependence of the instrument and the mixer's signals. </p>
+        <p><strong>Mallet hardness tracks brightness and noisiness:</strong> Aligning with the physical intuition about hardness and the contact area of the exciters used in the session the median centroid comparations shows how Soft Mallets (2,067–3,213Hz) &lt; Drum Sticks ≈ Guiro (3,008–3,126Hz) &lt; Medium Mallets ≈ Bow (4,485–4,568Hz) &lt; Brushes (5,810Hz). </p>
+        <p><strong>Rolls read as tonal:</strong> A roll on an untreated cymbal is dense and broadband; a roll into this mixer instead shows very low spectral flatness alongside a high onset rate, meaning the mixer picks a pitch and holds it even while being re-triggered several times a second.</p>
+        <p><strong>Bell vs. side location produces a detectable signature:</strong> Two independent results, a timbral split and a drifting locked frequency, agree on the same boundary.</p>
+
+        <h4>4. Overall picture</h4>
+        <p>The mixer's feedback path behaves as a <strong>nonlinear system with a small, fixed set of preferred resonant states</strong> (the six frequencies above) that are largely produced by the electronic system rather than the cymbal. What the acoustic input actually controls, through its wide spectrum, is <strong>which of those states gets excited, how strongly, and via which qualitative behaviour</strong>. A single quiet, barely audible touch is enough to trigger a full-spectrum buildup that outgrows the gesture that started it. A strong, sudden attack can just as easily produce a clean decay that never catches at all. The relationship between gesture and outcome becomes closer to a <strong>threshold system</strong>, where the acoustic input's job is to nudge the loop across, or fail to cross, the boundary into self-sustaining behaviour, and once across, the mixer's own dynamics largely determine what happens next.</p>
+      </div>
+
+      <!-- BRUSHES -->
+      <div class="cat-section" id="cat-s01-brushes">
+        <h3>01 — Brushes</h3>
+        <p class="cat-kicker">Source: 01_sistematicgestureBrushes.wav · 3:52.77 · brushing, hitting, and rubbing the cymbal</p>
+
+        <div class="cat-quick">
+          <div><span class="label">Dominant lock</span><span class="value">~823Hz, near-continuous 0:40–3:22</span></div>
+          <div><span class="label">Character</span><span class="value">Bright</span></div>
+          <div><span class="label">Signature behaviour</span><span class="value">Regenerative buildup + narrowband lock-in</span></div>
+          <div><span class="label">Onsets</span><span class="value">497 over 3:53 </span></div>
+        </div>
+
+        <p>497 onsets over 232.8s, unevenly distributed: near zero through long ringing stretches, spiking above 20s. Clustering the take's gesture segments recovers three acoustic classes, mapped to the three named techniques:</p>
+        <div class="cat-table-wrap">
+          <table class="cat-table">
+            <thead><tr><th>Class</th><th>Signature</th><th>Candidate technique</th></tr></thead>
+            <tbody>
+              <tr><td>Broadband noise</td><td>High centroid (~8,900Hz), highest flatness, quietest, few onsets</td><td>Brushing: continuous friction noise</td></tr>
+              <tr><td>Tonal / percussive</td><td>Lower centroid, low flatness, moderate–high RMS, sparse onsets</td><td>Hitting: a strike followed by a resonant, often self-sustaining ring</td></tr>
+              <tr><td>Dense rhythmic</td><td>Low centroid (~2,600Hz), very low flatness despite an 18–27/s onset rate</td><td>Rubbing and Rolling: a fast periodic excitation that influences the mixer as a quasi-tonal pulse train</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p><strong>Pitch content:</strong> the acoustic brush/cymbal contact itself has no fixed pitch, but once inside the mixer a small set of frequencies recur far more than chance would predict. <strong>823Hz (roughly G♯5)</strong> is the dominant lock, present continuously nearly the entire hitting/rubbing portion of the take. 400Hz, 325Hz, 135Hz, and 113Hz surface mainly towards the end of the recording as the loop's resonance steps downward toward silence. None of these sit in a simple harmonic relationship, they represent  independent resonant modes of the mixer's own feedback system.</p>
+
+        <div class="cat-img-grid">
+          <figure><img src="images/research/s01/brushes/spectrogram.jpg" loading="lazy" alt="Brushes — full-take spectrogram with onset markers and acoustic-class timeline"><figcaption>Full-take spectrogram, onset markers, and acoustic-class timeline</figcaption></figure>
+          <figure><img src="images/research/s01/brushes/features.jpg" loading="lazy" alt="Brushes — RMS, centroid, flatness, onset-rate curves"><figcaption>RMS, spectral centroid, flatness, and onset-rate over the full take</figcaption></figure>
+          <figure><img src="images/research/s01/brushes/attractors.jpg" loading="lazy" alt="Brushes — dominant spectral peak per frame"><figcaption>Dominant spectral peak per frame — recurring locked frequencies</figcaption></figure>
+        </div>
+
+        <h4>Interactions</h4>
+        <p>Four isolated onsets, each followed by 15+ seconds with no further physical contact, sketch a small typology of what the loop does once excited by the instrument:</p>
+        <div class="cat-img-grid cat-img-grid--pairs">
+          <figure><img src="images/research/s01/brushes/gesture-01.jpg" loading="lazy" alt="Spectrogram, Brushes, broadband regenerative buildup, t≈0:77"><figcaption>Broadband regenerative buildup — t ≈ 0:77</figcaption></figure>
+          <figure><img src="images/research/s01/brushes/gesture-02.jpg" loading="lazy" alt="Spectrogram, Brushes, narrowband lock-in, t≈0:38"><figcaption>Narrowband lock-in — t ≈ 0:38</figcaption></figure>
+          <figure><img src="images/research/s01/brushes/gesture-03.jpg" loading="lazy" alt="Spectrogram, Brushes, contrast natural decay, t≈3:09"><figcaption>Contrast, natural decay — t ≈ 3:09</figcaption></figure>
+          <figure><img src="images/research/s01/brushes/gesture-04.jpg" loading="lazy" alt="Spectrogram, Brushes, contrast weak engagement, t≈0:10"><figcaption>Contrast, weak engagement — t ≈ 0:10</figcaption></figure>
+        </div>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <h5>Broadband regenerative buildup</h5>
+            <span class="ts">t ≈ 0:77</span>
+            <p>The 200–1,000Hz range starts below the noise floor (−12 to −16dB) and climbs steadily to +14 to +20dB over the next 16 seconds: a 26–35dB rise with no new input.</p>
+            <audio controls src="audio/research/s01/brushes/01_broadband_buildup_t77s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Narrowband lock-in</h5>
+            <span class="ts">t ≈ 0:38</span>
+            <p>The 500Hz–1kHz band jumps from −14dB to +20dB in about 3 seconds and holds there for roughly 9 seconds, while every other band stays low: a clean capture of one resonant mode.</p>
+            <audio controls src="audio/research/s01/brushes/02_narrowband_lockin_t38s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Contrast, natural decay</h5>
+            <span class="ts">t ≈ 3:09</span>
+            <p>Right after the rubbing burst, energy falls off cleanly and monotonically across all bands, high frequencies first: what this system does when it isn't captured into self-oscillation.</p>
+            <audio controls src="audio/research/s01/brushes/03_natural_decay_contrast_t189s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Contrast, weak engagement</h5>
+            <span class="ts">t ≈ 0:10</span>
+            <p>A soft touch during the opening brushing exploration decays away with only a brief, minor blip and never builds into anything sustained.</p>
+            <audio controls src="audio/research/s01/brushes/04_weak_engagement_contrast_t10s.mp3"></audio>
+          </div>
+        </div>
+      </div>
+
+      <!-- MEDIUM MALLETS -->
+      <div class="cat-section" id="cat-s01-mediummallets">
+        <h3>02 — Medium Mallets</h3>
+        <p class="cat-kicker">Source: 01_sistematicGestureMediumMallets.wav · 2:33.15 · rolls, strokes, and hits (strokes and hits each tested on bell and side)</p>
+
+        <div class="cat-quick">
+          <div><span class="label">Dominant lock</span><span class="value">~401Hz, drifting to ~903Hz after ≈117s</span></div>
+          <div><span class="label">Character</span><span class="value">Mid-bright, hit on the bell</span></div>
+          <div><span class="label">Signature behaviour</span><span class="value">Narrowband growth + spontaneous collapse</span></div>
+          <div><span class="label">Onsets</span><span class="value">376 over 2:33 (mean 2.46/s)</span></div>
+        </div>
+
+        <p>376 onsets over 153.2s (mean 2.46/s), essentially continuous apart from a lead-in and a tail. A roll passage (70.5–84.7s) stands out immediately: onset rate 12.7–23.6/s, yet flatness stays very low: a second confirmation that a fast, periodic gesture interaction with the the mixer render as quasi-tonal sound material rather than noisy. The remaining material splits into a sparser, more focused "strokes" class (4.2–41.0s) and a louder "hits" class (41.0–70.5s, 87.0–147.8s) that drifts in timbre (narrower/darker before ≈112–117s, brighter/broader after) and "cuts" the self-oscillation.</p>
+
+        <p><strong>Pitch content:</strong> the dominant recurring frequency is <strong>401Hz (roughly G4)</strong>, locked continuously during the strokes phase, the first hits phase, and the rolls. 576Hz runs even longer, alongside 319Hz and 518Hz over similar stretches. In the window the dominant lock drifts upward through 576Hz, up to 900–1,100Hz, back to 650Hz, settling near <strong>903Hz (roughly A#5)</strong> for the final ~10 seconds. Something physical changed in that stretch, correlating with timbral shift.</p>
+
+        <div class="cat-img-grid">
+          <figure><img src="images/research/s01/mediummallets/spectrogram.jpg" loading="lazy" alt="Medium Mallets — full-take spectrogram"><figcaption>Full-take spectrogram with onset markers and class timeline</figcaption></figure>
+          <figure><img src="images/research/s01/mediummallets/features.jpg" loading="lazy" alt="Medium Mallets — feature curves"><figcaption>RMS, centroid, flatness, onset-rate</figcaption></figure>
+          <figure><img src="images/research/s01/mediummallets/attractors.jpg" loading="lazy" alt="Medium Mallets — attractor frequencies"><figcaption>Dominant spectral peak per frame</figcaption></figure>
+        </div>
+
+        <h4>Interactions</h4>
+        <p>Four onsets, each window cut exactly at the next detected onset so nothing shown is contaminated by a new strike:</p>
+        <div class="cat-img-grid cat-img-grid--pairs">
+          <figure><img src="images/research/s01/mediummallets/gesture-01.jpg" loading="lazy" alt="Spectrogram, Medium Mallets, narrowband growth, t≈90.0s"><figcaption>Narrowband growth — t ≈ 90.0s</figcaption></figure>
+          <figure><img src="images/research/s01/mediummallets/gesture-02.jpg" loading="lazy" alt="Spectrogram, Medium Mallets, near-total sustain, t≈52.9s"><figcaption>Near-total sustain — t ≈ 52.9s</figcaption></figure>
+          <figure><img src="images/research/s01/mediummallets/gesture-03.jpg" loading="lazy" alt="Spectrogram, Medium Mallets, spontaneous collapse, t≈140.0s"><figcaption>Spontaneous collapse — t ≈ 140.0s</figcaption></figure>
+          <figure><img src="images/research/s01/mediummallets/gesture-04.jpg" loading="lazy" alt="Spectrogram, Medium Mallets, frequency-selective sustain, t≈117.2s"><figcaption>Frequency-selective sustain — t ≈ 117.2s</figcaption></figure>
+        </div>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <h5>Narrowband growth</h5>
+            <span class="ts">t ≈ 90.0s</span>
+            <p>Right after the roll ends: the 500Hz–1kHz band climbs from ~22dB to ~28–30dB across 27.2s with nothing re-exciting it, while 200–500Hz gently falls.</p>
+            <audio controls src="audio/research/s01/mediummallets/01_narrowband_growth_t90s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Near-total sustain</h5>
+            <span class="ts">t ≈ 52.9s</span>
+            <p>The 200–500Hz band moves only about 3dB across the whole window. This is the loop blending with the struck cymbal and actively resistis its decay.</p>
+            <audio controls src="audio/research/s01/mediummallets/02_near_total_sustain_t53s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Spontaneous collapse</h5>
+            <span class="ts">t ≈ 140.0s</span>
+            <p>A stable ~20dB hold in 500Hz–1kHz holds for about 4 seconds, then crashes 30–40dB in roughly 1.5 seconds — with the next physical onset still over a second away.</p>
+            <audio controls src="audio/research/s01/mediummallets/03_spontaneous_collapse_t140s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Frequency-selective sustain</h5>
+            <span class="ts">t ≈ 117.2s</span>
+            <p>Right inside the drift window above: 500Hz–2kHz holds close to flat for the whole window while 200–500Hz underneath it steadily decays away.</p>
+            <audio controls src="audio/research/s01/mediummallets/04_frequency_selective_sustain_t117s.mp3"></audio>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOFT MALLETS -->
+      <div class="cat-section" id="cat-s01-softmallets">
+        <h3>03 — Soft Mallets</h3>
+        <p class="cat-kicker">Two recordings from the same soft-mallet session. Same gesture set as Medium Mallets (rolls, strokes, hits at bell and side)</p>
+
+        <div class="cat-quick">
+          <div><span class="label">Dominant lock</span><span class="value">~319/401Hz (Pt.1) → ~109Hz (Pt.2, strongest single lock in the cymbal session)</span></div>
+          <div><span class="label">Character</span><span class="value">Darkest, most tonal mallet type tested</span></div>
+          <div><span class="label">Signature behaviour</span><span class="value">Regenerative buildup + extreme sustain</span></div>
+          <div><span class="label">Notable</span><span class="value">Pt.2 has three separate roll bursts.</span></div>
+        </div>
+
+        <h4>Part 1 — 6:16.16</h4>
+        <p>329 onsets, concentrated unevenly. Soft mallets produce a noticeably darker and more tonal than medium mallet type.</p>
+        <p>The take splits into four blocks: an opening, dense/bright block with one sharp roll insert (strokes → rolls), a long, sparse, dark block (hits on bell), and a very sparse, brighter final block (hits on side), similar to the behaviour observed in the Medium Mallets rec.</p>
+        <p><strong>Pitch content:</strong> <strong>319Hz (roughly D♯4)</strong> and <strong>401Hz (roughly G4)</strong> are the two dominant locks, and both survive between blocks, present early on and reappearing after the loop has gone completely silent. Again an evidence that these are persistent resonant states of the mixer's circuit itself, potentially triggered. A third, quieter 109Hz (roughly A2) lock builds up in the later, darker part of the second block.</p>
+        <p class="cat-note">No spectrogram/feature-tracking images were generated for Part 1. The four gesture recordings below, are taken from the analysis if the full set.</p>
+
+        <h4>Interactions — Part 1</h4>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <h5>Decay, then a late resurgence</h5>
+            <span class="ts">t ≈ 45.6s</span>
+            <p>The 200–500Hz band fades steadily for 13 seconds toward −11dB, looking headed for silence, then climbs back on its own to +14dB by t=19s. A fade out and a comeback.</p>
+            <audio controls src="audio/research/s01/softmallets-pt1/01_decay_then_resurgence_t46s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Frequency-selective sustain</h5>
+            <span class="ts">t ≈ 186.7s</span>
+            <p>500Hz–1kHz drops only about 7dB across the whole window (essentially holding) while 1–2kHz and 8–16kHz fall away much faster underneath it.</p>
+            <audio controls src="audio/research/s01/softmallets-pt1/02_frequency_selective_sustain_t187s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Contrast and genuine settling decay</h5>
+            <span class="ts">t ≈ 304.6s</span>
+            <p>The last isolated onset before silence: every band collapses within about 2 seconds and mostly stays down.</p>
+            <audio controls src="audio/research/s01/softmallets-pt1/03_natural_settling_decay_t305s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Quick dip, then a louder swell</h5>
+            <span class="ts">t ≈ 350.6s</span>
+            <p>200–500Hz dips from +19dB to +12dB, then climbs past its own starting point to +26dB creating a compact "out and in again" cycle.</p>
+            <audio controls src="audio/research/s01/softmallets-pt1/04_dip_then_louder_swell_t351s.mp3"></audio>
+          </div>
+        </div>
+
+        <h4>Part 2 — 3:56.17</h4>
+        <p>997 onsets and markedly darker still: median centroid 2,067Hz, flatness close to zero almost everywhere. Structure splits into a sparse dark opening, a hits/strokes class, and <strong>three separate roll bursts</strong>. Combined with the roll instances already documented, the roll signature now counts six independent instances of the "fast-but-tonal" nature across four recordings.</p>
+        <p><strong>Pitch content is the strongest lock in the session:</strong> <strong>109Hz (roughly A2)</strong> dominates almost completely: the strongest peak in nearly half of all analysed frames, present continuously from 0s to 233s regardless of gesture. This is the same frequency that appeared only as a secondary lock late in Part 1, and now confirmed as the dominant resonance of an entirely separate take, again a sign of the mixer own self-sutained resonances.</p>
+
+        <div class="cat-img-grid">
+          <figure><img src="images/research/s01/softmallets-pt2/spectrogram.jpg" loading="lazy" alt="Soft Mallets Pt.2 — full-take spectrogram"><figcaption>Part 2 — full-take spectrogram, onset markers, class timeline</figcaption></figure>
+          <figure><img src="images/research/s01/softmallets-pt2/features.jpg" loading="lazy" alt="Soft Mallets Pt.2 — feature curves"><figcaption>Part 2 — RMS, centroid, flatness, onset-rate curves</figcaption></figure>
+          <figure><img src="images/research/s01/softmallets-pt2/attractors.jpg" loading="lazy" alt="Soft Mallets Pt.2 — attractor frequencies"><figcaption>Part 2 — ~109Hz visible as a near-solid band across the entire take</figcaption></figure>
+        </div>
+
+        <h4>Interactions — Part 2</h4>
+        <div class="cat-img-grid cat-img-grid--pairs">
+          <figure><img src="images/research/s01/softmallets-pt2/gesture-01.jpg" loading="lazy" alt="Spectrogram, Soft Mallets Pt.2, full-spectrum regenerative buildup, t≈4.8s"><figcaption>Full-spectrum regenerative buildup — t ≈ 4.8s</figcaption></figure>
+          <figure><img src="images/research/s01/softmallets-pt2/gesture-02.jpg" loading="lazy" alt="Spectrogram, Soft Mallets Pt.2, extreme sustain with a synchronized dip, t≈76.7s"><figcaption>Extreme sustain with a synchronized dip — t ≈ 76.7s</figcaption></figure>
+          <figure><img src="images/research/s01/softmallets-pt2/gesture-03.jpg" loading="lazy" alt="Spectrogram, Soft Mallets Pt.2, fast broadband build then plateau, t≈160.2s"><figcaption>Fast broadband build, then plateau — t ≈ 160.2s</figcaption></figure>
+          <figure><img src="images/research/s01/softmallets-pt2/gesture-04.jpg" loading="lazy" alt="Spectrogram, Soft Mallets Pt.2, confirming sustain, t≈219.8s"><figcaption>Confirming sustain — t ≈ 219.8s</figcaption></figure>
+        </div>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <h5>Full-spectrum regenerative buildup</h5>
+            <span class="ts">t ≈ 4.8s</span>
+            <p>Every band grows with nothing re-exciting it.</p>
+            <audio controls src="audio/research/s01/softmallets-pt2/01_dramatic_full_spectrum_buildup_t5s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Extreme sustain with a synchronized dip</h5>
+            <span class="ts">t ≈ 76.7s</span>
+            <p>All bands hold within a couple of dB of their starting level for 19+ seconds, then dip sharply and recover together within few seconds.</p>
+            <audio controls src="audio/research/s01/softmallets-pt2/02_extreme_sustain_with_dip_t77s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Fast broadband build, then plateau</h5>
+            <span class="ts">t ≈ 160.2s</span>
+            <p>Between two roll bursts: every band rises within about 2 seconds of a very quiet onset and holds there.</p>
+            <audio controls src="audio/research/s01/softmallets-pt2/03_fast_broadband_build_t160s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Confirming sustain</h5>
+            <span class="ts">t ≈ 219.8s</span>
+            <p>A shorter but consistent case of the same near-flat holding behaviour already documented above.</p>
+            <audio controls src="audio/research/s01/softmallets-pt2/04_confirming_sustain_t220s.mp3"></audio>
+          </div>
+        </div>
+        <p class="cat-note">Cross-recording analysis: Part 2 is darker and more heavily locked than Part 1; possibly becasue of a more consistent soft, central mallet contact throughout. Both parts show the same qualitative repertoire though: regenerative buildup from a quiet touch, extended near-flat sustain, and synchronized whole-spectrum dip/recovery.</p>
+      </div>
+
+      <!-- DRUM STICKS -->
+      <div class="cat-section" id="cat-s01-stick">
+        <h3>04 — Drum Sticks</h3>
+        <p class="cat-kicker">Source: 01_sitematicgesturesSticks.wav · 3:36.78 · rolls, strokes, and hits (strokes and hits each tested on bell and side)</p>
+
+        <div class="cat-quick">
+          <div><span class="label">Dominant lock</span><span class="value">~319–331Hz, continuous 14s–213s</span></div>
+          <div><span class="label">Character</span><span class="value">Brightness between medium and soft mallets</span></div>
+          <div><span class="label">Signature behaviour</span><span class="value">Mid-take swell + fast build</span></div>
+          <div><span class="label">Onsets</span><span class="value">559 over 3:37 (mean 2.58/s)</span></div>
+        </div>
+
+        <p>216.8s, continuous apart from a lead-in and short tail. 559 onsets (mean 2.58/s). Median centroid and flatness lay almost exactly between medium and soft mallets in the "brightness ranking". Clustering finds a clean five-part structure: strokes (bell+side interleaved), a hits region with low onset rate (side), a darker hits region (bell), a roll, and a resumed brighter hits region (side). The bell/side duality rests on the same brighter-and-broader vs. darker-and-narrower contrast found in Medium Mallets.</p>
+
+        <p><strong>Pitch content confirms the system's "preferencies":</strong> <strong>319–331Hz</strong> is the dominant lock here, present continuously from 14s to 213s, with 401Hz alongside it from 19–213s and a quieter 109–121Hz lock from 26–212s. These are the same two dominant locks found in both Medium Mallets and Soft Mallets Pt.1, and 109Hz is the same frequency that dominated Soft Mallets Pt.2. Three completely different excitation materials: soft, medium, and hard stick, and the mixer keeps returning to the same handful of resonant frequencies regardless.</p>
+
+        <div class="cat-img-grid">
+          <figure><img src="images/research/s01/stick/attractors.jpg" loading="lazy" alt="Drum Sticks — attractor frequencies"><figcaption>Dominant spectral peak per frame</figcaption></figure>
+        </div>
+
+        <h4>Interactions</h4>
+        <div class="cat-img-grid cat-img-grid--pairs">
+          <figure><img src="images/research/s01/stick/gesture-01.jpg" loading="lazy" alt="Spectrogram, Drum Sticks, sustain with a mid-take swell, t≈64.0s"><figcaption>Sustain with a mid-take swell — t ≈ 64.0s</figcaption></figure>
+          <figure><img src="images/research/s01/stick/gesture-02.jpg" loading="lazy" alt="Spectrogram, Drum Sticks, frequency-selective decay, t≈50.8s"><figcaption>Frequency-selective decay — t ≈ 50.8s</figcaption></figure>
+          <figure><img src="images/research/s01/stick/gesture-03.jpg" loading="lazy" alt="Spectrogram, Drum Sticks, clean short decay, t≈165.8s"><figcaption>Clean short decay — t ≈ 165.8s</figcaption></figure>
+          <figure><img src="images/research/s01/stick/gesture-04.jpg" loading="lazy" alt="Spectrogram, Drum Sticks, fast build, t≈200.5s"><figcaption>Fast build — t ≈ 200.5s</figcaption></figure>
+        </div>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <h5>Sustain with a mid-take swell</h5>
+            <span class="ts">t ≈ 64.0s</span>
+            <p>The longest isolation in this file (20.5s): 200–500Hz and 1–2kHz both hold, then climb further around t=6–10s with nothing re-exciting them, before easing back down.</p>
+            <audio controls src="audio/research/s01/stick/01_sustain_with_swell_t64s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Frequency-selective decay</h5>
+            <span class="ts">t ≈ 50.8s</span>
+            <p>200–500Hz stays within 2–3dB of flat for the whole window while 2–4kHz fades roughly 14dB beneath it.</p>
+            <audio controls src="audio/research/s01/stick/02_frequency_selective_decay_t51s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Clean short decay</h5>
+            <span class="ts">t ≈ 165.8s</span>
+            <p>Stroke on Bell, just before the rolls: a conventional, fairly ordinary decay across all bands.</p>
+            <audio controls src="audio/research/s01/stick/03_clean_short_decay_t166s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Fast build</h5>
+            <span class="ts">t ≈ 200.5s</span>
+            <p>Stroke on the side, right after the rolls: 200Hz–1kHz climbs sharply and holds, a compressed regenerative-buildup pattern.</p>
+            <audio controls src="audio/research/s01/stick/04_fast_build_postroll_t200s.mp3"></audio>
+          </div>
+        </div>
+      </div>
+
+      <!-- GUIRO -->
+      <div class="cat-section" id="cat-s01-guiro">
+        <h3>05 — Guiro (Stick Rubbed on Cymbal Side)</h3>
+        <p class="cat-kicker">Source: 01_1_sisteamticgesture_Guiro.wav · 3:02.10 · extended technique (continuous friction)</p>
+
+        <div class="cat-quick">
+          <div><span class="label">Dominant locks</span><span class="value">~576–606Hz, ~500Hz, ~821Hz — nearly the whole take</span></div>
+          <div><span class="label">Character</span><span class="value">cumulative RMS buildup </span></div>
+          <div><span class="label">Signature behaviour</span><span class="value">Full-spectrum sustain + irregular pulsing</span></div>
+          <div><span class="label">Excitation</span><span class="value">Continuous friction</span></div>
+        </div>
+
+        <p>Median centroid and flatness are close to the Drum Sticks recording (the same stick material, used differently). The defining feature here isn't per-gesture decay but a <strong>cumulative buildup</strong>: mean RMS energy rises roughly eightfold, near-monotonically, across consecutive 30-second windows over the full three minutes. The discrete-strike recordings doens't behaves like this: continuous friction cumulatively feeds the loop, with later continuation of the gesture needing less effort to sustain a loud, dense texture than the earlier did.</p>
+
+        <p><strong>Pitch content:</strong> <strong>576–606Hz</strong>, <strong>500Hz</strong> and <strong>821Hz</strong> cover almost the entire take. 821Hz is the same lock (within a few Hz) that dominates both the Brushes and Medium Mallets recordings; 576Hz is likewise close to a lock seen in both. Again, rather than each technique creating its own unrelated set of resonances, the different excitation styles seem to preferentially wake up different subsets of a shared pool of resonant modes of the mixer itself.</p>
+
+        <div class="cat-img-grid">
+          <figure><img src="images/research/s01/guiro/spectrogram.jpg" loading="lazy" alt="Guiro — full-take spectrogram"><figcaption>Full-take spectrogram: the progressive brightening/thickening is visible directly</figcaption></figure>
+          <figure><img src="images/research/s01/guiro/features.jpg" loading="lazy" alt="Guiro — feature curves"><figcaption>RMS, centroid, flatness, onset-rate curves with the 30s-window energy trend overlaid</figcaption></figure>
+          <figure><img src="images/research/s01/guiro/attractors.jpg" loading="lazy" alt="Guiro — attractor frequencies"><figcaption>Dominant spectral peak per frame</figcaption></figure>
+        </div>
+
+        <h4>Interactions</h4>
+        <p>Four gap-truncated isolated onsets, chosen from the moments where the continuous rubbing did pause:</p>
+        <div class="cat-img-grid cat-img-grid--pairs">
+          <figure><img src="images/research/s01/guiro/gesture-01.jpg" loading="lazy" alt="Spectrogram, Guiro, full-spectrum sustain, t≈145.3s"><figcaption>Full-spectrum sustain — t ≈ 145.3s</figcaption></figure>
+          <figure><img src="images/research/s01/guiro/gesture-02.jpg" loading="lazy" alt="Spectrogram, Guiro, broadband regenerative growth, t≈72.2s"><figcaption>Broadband regenerative growth — t ≈ 72.2s</figcaption></figure>
+          <figure><img src="images/research/s01/guiro/gesture-03.jpg" loading="lazy" alt="Spectrogram, Guiro, high-frequency selective recovery, t≈108.2s"><figcaption>High-frequency selective recovery — t ≈ 108.2s</figcaption></figure>
+          <figure><img src="images/research/s01/guiro/gesture-04.jpg" loading="lazy" alt="Spectrogram, Guiro, irregular pulsing, t≈28.0s"><figcaption>Irregular pulsing — t ≈ 28.0s</figcaption></figure>
+        </div>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <h5>Full-spectrum sustain</h5>
+            <span class="ts">t ≈ 145.3s</span>
+            <p>A long windowe with right at its start the loudest stretch of the piece.</p>
+            <audio controls src="audio/research/s01/guiro/01_full_spectrum_sustain_28s_t145s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Broadband regenerative growth</h5>
+            <span class="ts">t ≈ 72.2s</span>
+            <p>A full-spectrum version of the narrowband buildup pattern seen in earlier entries: 9–12dB across the whole range.</p>
+            <audio controls src="audio/research/s01/guiro/02_broadband_regenerative_growth_t72s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>High-frequency selective recovery</h5>
+            <span class="ts">t ≈ 108.2s</span>
+            <p>The 4–16kHz range dips sharply, then climbs back 12–19dB, the inverse of the more common "low sustains, high fades" pattern seen elsewhere.</p>
+            <audio controls src="audio/research/s01/guiro/03_highfreq_selective_recovery_t108s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Irregular pulsing</h5>
+            <span class="ts">t ≈ 28.0s</span>
+            <p>A "breathing" / self-oscillation example.</p>
+            <audio controls src="audio/research/s01/guiro/04_irregular_pulsing_t28s.mp3"></audio>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOW -->
+      <div class="cat-section" id="cat-s01-bow">
+        <h3>06 — Bow (Double Bass Bow)</h3>
+        <p class="cat-kicker">Source: 01_1_sistematicgestureBow.wav · 4:40.42 · extended technique — continuous excitation</p>
+
+        <div class="cat-quick">
+          <div><span class="label">Dominant lock</span><span class="value">~178–190Hz</span></div>
+          <div><span class="label">Character</span><span class="value">Two-phase: a long buildup and a marked brightening</span></div>
+          <div><span class="label">Signature behaviour</span><span class="value">A synchronized dip-and-recovery</span></div>
+          <div><span class="label">Excitation</span><span class="value">Continuous</span></div>
+        </div>
+
+        <p>Bowing produces a strongly tonal excitation. This take shows two phases: a long buildup across the first ~200s (energy generally climbing instead of resetting after each stroke), then a marked brightening around 200–260s where centroid jumps to a higher range, representation of a change in bow contact point and pressure.</p>
+
+        <p><strong>Pitch content:</strong> <strong>178–190Hz (roughly F3/F♯3)</strong> is present throughout the entire take. Short locks appear in sequence beneath it: 249Hz, 354Hz, 390Hz, and 600Hz. Continuous excitation seems to let the feedback settle into and hold a resonance more than a struck excitation does.</p>
+
+        <div class="cat-img-grid">
+          <figure><img src="images/research/s01/bow/spectrogram.jpg" loading="lazy" alt="Bow — full-take spectrogram"><figcaption>Full-take spectrogram</figcaption></figure>
+          <figure><img src="images/research/s01/bow/features.jpg" loading="lazy" alt="Bow — feature curves"><figcaption>RMS, centroid, flatness, onset-rate curves with the 20s-window trend overlaid</figcaption></figure>
+          <figure><img src="images/research/s01/bow/attractors.jpg" loading="lazy" alt="Bow — attractor frequencies"><figcaption>Dominant spectral peak per frame</figcaption></figure>
+        </div>
+
+        <h4>Interactions</h4>
+        <div class="cat-img-grid cat-img-grid--pairs">
+          <figure><img src="images/research/s01/bow/gesture-01.jpg" loading="lazy" alt="Spectrogram, Bow, synchronized dip-and-recovery, t≈98.7s"><figcaption>Synchronized dip-and-recovery — t ≈ 98.7s</figcaption></figure>
+          <figure><img src="images/research/s01/bow/gesture-02.jpg" loading="lazy" alt="Spectrogram, Bow, frequency-selective sustain, t≈30.5s"><figcaption>Frequency-selective sustain — t ≈ 30.5s</figcaption></figure>
+          <figure><img src="images/research/s01/bow/gesture-03.jpg" loading="lazy" alt="Spectrogram, Bow, irregular multi-band pulsing, t≈217.2s"><figcaption>Irregular multi-band pulsing — t ≈ 217.2s</figcaption></figure>
+          <figure><img src="images/research/s01/bow/gesture-04.jpg" loading="lazy" alt="Spectrogram, Bow, contrast clean complete decay, t≈270.1s"><figcaption>Contrast — clean, complete decay — t ≈ 270.1s</figcaption></figure>
+        </div>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <h5>Synchronized dip-and-recovery</h5>
+            <span class="ts">t ≈ 98.7s</span>
+            <p>Every band crashes together within about 1.5 seconds, bottoming out near-silent, then largely rebuilds within 4–6 seconds with nothing re-exciting it.</p>
+            <audio controls src="audio/research/s01/bow/01_dramatic_dip_and_recovery_t99s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Frequency-selective sustain</h5>
+            <span class="ts">t ≈ 30.5s</span>
+            <p>500Hz–1kHz holds within a few dB of flat for the entire window while the bands around it drift more.</p>
+            <audio controls src="audio/research/s01/bow/02_frequency_selective_sustain_t31s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Irregular multi-band pulsing</h5>
+            <span class="ts">t ≈ 217.2s</span>
+            <p>A more chaotic version of the breathing pattern seen in the Guiro excerpts.</p>
+            <audio controls src="audio/research/s01/bow/03_irregular_multiband_pulsing_t217s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Contrast — clean, complete decay</h5>
+            <span class="ts">t ≈ 270.1s</span>
+            <p>Every band falls steadily to near-silence.</p>
+            <audio controls src="audio/research/s01/bow/04_clean_complete_decay_t270s.mp3"></audio>
+          </div>
+        </div>
+      </div>
+
+      <!-- FULL IMPROVISATION -->
+      <div class="cat-section" id="cat-s01-improv">
+        <h3>00 — Final Improvisation as Synthesis</h3>
+        <p class="cat-kicker">9:42 · 1,125 onsets · median centroid 4,011Hz · mixed: mallets, rolls, guiro effect, nail-scrape, bow</p>
+
+        <div class="cat-quick">
+          <div><span class="label">Coverage</span><span class="value">5 of the 6 catalogue-wide attractor bands, independently confirmed</span></div>
+          <div><span class="label">Character</span><span class="value">All six techniques in one continuous take, moved between quickly</span></div>
+          <div><span class="label">Adds</span><span class="value">Transition -> what happens when the loop shifts state mid-piece/technique</span></div>
+        </div>
+
+        <p>The full improvisation is what happens when all six are combined with the free-form negotiation between player and feedback loop that the systematic studies were designed to isolate from. This adds to the studies of the isolated gesture, an analysis of transitory parts: what happens when the feedback and the system, left in one state by one gesture, is immediately given a different kind of input by the next.</p>
+
+        <h4>Interactions</h4>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <h5>Frequency switch</h5>
+            <span class="ts">t ≈ 278s</span>
+            <p>A spontaneous shift in which resonant regime the loop is holding onto mid-decay, without a new physical excitation.</p>
+            <audio controls src="audio/research/s01/improvisation/01_regime_handoff_t278s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Self-oscillating swell</h5>
+            <span class="ts">t ≈ 251s</span>
+            <p>The same pattern documented in the Guiro and Bow entries' "irregular pulsing".</p>
+            <audio controls src="audio/research/s01/improvisation/02_self_oscillating_swell_t251s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Limit-cycle dip &amp; recovery</h5>
+            <span class="ts">t ≈ 456s</span>
+            <p>A synchronized whole-spectrum dip-and-recovery (similar behaviour documented in the Bow entry).</p>
+            <audio controls src="audio/research/s01/improvisation/03_limit_cycle_dip_recovery_t456s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Regenerative buildup</h5>
+            <span class="ts">t ≈ 440s</span>
+            <p>A regenerative buildup from a near-silent strike, documented independently in four other recordings across this session.</p>
+            <audio controls src="audio/research/s01/improvisation/04_regenerative_buildup_t440s.mp3"></audio>
+          </div>
+        </div>
+      </div>
+
+      <a class="back-link" data-target="catalogue" style="margin-top:36px;">← Back to Catalogue</a>
+    </div>
+  </section>
+
+  <!-- CATALOGUE OF INTERACTIONS — Session 02: Guitar -->
+  <section id="catalogue-s02" class="view">
+    <div class="wrap">
+      <a class="back-link" data-target="catalogue">← Catalogue</a>
+      <div class="section-head">
+        <p class="kicker">Catalogue of Interactions · Session 02</p>
+        <h2>Electric Guitar</h2>
+      </div>
+
+      <div class="cat-meta">
+        <div><span class="label">Date</span><span class="value">30 Mar 2026</span></div>
+        <div><span class="label">Location</span><span class="value">Studio Hectolitre</span></div>
+        <div><span class="label">Performer</span><span class="value">Daniel Lythgoe</span></div>
+        <div><span class="label">Instrument</span><span class="value">Electric Guitar</span></div>
+        <div><span class="label">Mixer</span><span class="value">Mackie 1202-VLZ PRO</span></div>
+        <div><span class="label">Session type</span><span class="value">Free improvisation</span></div>
+        <div><span class="label">Duration</span><span class="value">2h</span></div>
+        <div><span class="label">Research focus</span><span class="value">Harmonic electric instrument and its own processing, in interaction with the NIM</span></div>
+      </div>
+
+      <p class="research-intro">
+        The session explores how a harmonic electric instrument, inserted into the mixer as a line signal, can influence the feedback loops. Furthermore, different pre-mixer effects are used on the guitar signal, observing how each differently shapes the interaction with the NIM. It also explores non-conventional techniques operating on the sound-production method of the instrument itself, such as the use of a contact mic and a violin bow for friction, and a condenser mic to create feedback with the pickup.
+      </p>
+
+      <p class="cat-note">I took advantage of the time booked to rehearse for an upcoming performance to also record for this session, so all six recordings here are full rehearsal takes rather than short, dedicated technique demonstrations. Instead of isolating each gesture in its own take as the other sessions in this catalogue do, every technique documented below has been pulled out after the fact, at the specific timestamps where it actually occurs across these six improvisations. Six techniques are documented: chords (plucked, strummed, and arpeggiated), harmonics, tapping pick, brushing with a contact mic, bowing, and the guitar's own pre-mixer processing (delay and pitch-shifting).</p>
+
+      <details class="cat-jumpnav">
+        <summary>Jump to</summary>
+        <nav>
+          <a data-target="catalogue-s02">↑ Top</a>
+          <a onclick="document.getElementById('cat-s02-setup').scrollIntoView({behavior:'smooth'})">Setup</a>
+          <a onclick="document.getElementById('cat-s02-overview').scrollIntoView({behavior:'smooth'})">General Overview</a>
+          <a onclick="document.getElementById('cat-s02-chords').scrollIntoView({behavior:'smooth'})">Chords</a>
+          <a onclick="document.getElementById('cat-s02-harmonics').scrollIntoView({behavior:'smooth'})">Harmonics</a>
+          <a onclick="document.getElementById('cat-s02-tapping').scrollIntoView({behavior:'smooth'})">Tapping Pick</a>
+          <a onclick="document.getElementById('cat-s02-brushing').scrollIntoView({behavior:'smooth'})">Brushing with Contact Mic</a>
+          <a onclick="document.getElementById('cat-s02-bowing').scrollIntoView({behavior:'smooth'})">Bowing</a>
+          <a onclick="document.getElementById('cat-s02-processing').scrollIntoView({behavior:'smooth'})">Processing Before the Mixer</a>
+          <a onclick="document.getElementById('cat-s02-finalimprov').scrollIntoView({behavior:'smooth'})">Final Improvisation as Synthesis</a>
+        </nav>
+      </details>
+
+      <nav class="cat-siderail">
+        <span class="rail-label">Jump to</span>
+        <a data-target="catalogue-s02">↑ Top</a>
+        <a onclick="document.getElementById('cat-s02-setup').scrollIntoView({behavior:'smooth'})">Setup</a>
+        <a onclick="document.getElementById('cat-s02-overview').scrollIntoView({behavior:'smooth'})">General Overview</a>
+        <a onclick="document.getElementById('cat-s02-chords').scrollIntoView({behavior:'smooth'})">Chords</a>
+        <a onclick="document.getElementById('cat-s02-harmonics').scrollIntoView({behavior:'smooth'})">Harmonics</a>
+        <a onclick="document.getElementById('cat-s02-tapping').scrollIntoView({behavior:'smooth'})">Tapping Pick</a>
+        <a onclick="document.getElementById('cat-s02-brushing').scrollIntoView({behavior:'smooth'})">Brushing with Contact Mic</a>
+        <a onclick="document.getElementById('cat-s02-bowing').scrollIntoView({behavior:'smooth'})">Bowing</a>
+        <a onclick="document.getElementById('cat-s02-processing').scrollIntoView({behavior:'smooth'})">Processing Before the Mixer</a>
+        <a onclick="document.getElementById('cat-s02-finalimprov').scrollIntoView({behavior:'smooth'})">Final Improvisation as Synthesis</a>
+      </nav>
+
+      <!-- SETUP -->
+      <div class="cat-section" id="cat-s02-setup">
+        <h3>Setup</h3>
+        <p class="cat-kicker">Amplification &amp; No-Input Mixer Configuration</p>
+
+        <p>The guitar is captured with the signal passed through a Helix multi-fx processor before reaching the mixer, so the "instrument" feeding the loop is the guitar plus its own pre-processing chain. Additionally, a contact mic and a condenser mic (Rode NT5) have been used for some of the more experimental techniques.</p>
+
+        <h4>Mackie 1202-VLZ PRO</h4>
+        <div class="cat-table-wrap">
+          <table class="cat-table">
+            <thead><tr><th>Output</th><th>Input</th></tr></thead>
+            <tbody>
+              <tr><td>Main L</td><td>Channel 7/8 L</td></tr>
+              <tr><td>Main R</td><td>Channel 7/8 R</td></tr>
+              <tr><td>Channel 1 (from channel insert tip-send)</td><td>Channel 1</td></tr>
+              <tr><td>Channel 2 (from channel insert tip-send)</td><td>Channel 2</td></tr>
+              <tr><td>Channel 4 (from channel insert tip-send)</td><td>Channel 5/6 L</td></tr>
+              <tr><td>Guitar (first passing through multi-fx processor)</td><td>Channel 3 (Line)</td></tr>
+              <tr><td>Contact mic</td><td>Channel 4</td></tr>
+              <tr><td>Condenser mic (when used)</td><td>Channel 4 (instead of Contact mic)</td></tr>
+              <tr><td>Control room L</td><td>Channel 9/10 (mono signal in L)</td></tr>
+              <tr><td>Aux 1-2</td><td>Channel 11/12</td></tr>
+              <tr><td>Tape out (used as output) (RCA to jack)</td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Gain &amp; EQ</h4>
+        <div class="cat-table-wrap">
+          <table class="cat-table">
+            <thead><tr><th>Channel</th><th>Gain (initial)</th><th>EQ</th></tr></thead>
+            <tbody>
+              <tr><td>Ch 1</td><td>+15dB (Line)</td><td>HPF + focus on High bands </td></tr>
+              <tr><td>Ch 2</td><td>+30dB (Line)</td><td>focus on Low bands</td></tr>
+              <tr><td>Ch 3</td><td>0dB (Line)</td><td>Variable, depending on the evolution of the feedback</td></tr>
+              <tr><td>Ch 4</td><td>+10dB (XLR)</td><td>Variable, depending on the evolution of the feedback</td></tr>
+              <tr><td>Ch 5/6</td><td>Stereo channel (Line)</td><td>Equal low and high</td></tr>
+              <tr><td>Ch 7/8</td><td>Stereo channel (Line)</td><td>focus on extremely High bands</td></tr>
+              <tr><td>Ch 9/10</td><td> Stereo channel (Line)</td><td>focus on extremely High bands</td></tr>
+              <tr><td>Ch 11/12</td><td>Stereo channel (Line)</td><td>Variable, depending on the evolution of the feedback</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="cat-note">Gain range depends on input type: 0dB to +60dB using XLR, using Line there is a 15dB attenuation up to 45dB at the knob fully up; the stereo channel runs from off +10dBV to +4dBU (no knobs).</p>
+
+        <h4>Instrument techniques</h4>
+        <div class="cat-table-wrap">
+          <table class="cat-table">
+            <thead><tr><th>Technique</th><th>Category</th><th>Description</th><th>Sonic result</th></tr></thead>
+            <tbody>
+              <tr><td>Chords — plucked with fingers</td><td>Conventional</td><td>Open chords plucked softly, attack shaped with the instrument's volume knob.</td><td>A smooth swell with the low and low-mid bands that hold a steady resonance.</td></tr>
+              <tr><td>Chords — strummed with the pick</td><td>Conventional</td><td>Full chords strummed with a pick.</td><td>Each strum re-triggers a sharp attack transient.</td></tr>
+              <tr><td>Chords — arpeggiated</td><td>Conventional</td><td>Notes of a chord picked out in sequence rather than together.</td><td>Every note decays cleanly.</td></tr>
+              <tr><td>Harmonics</td><td>Extended</td><td>Natural harmonic touched off the string.</td><td>Narrow, clean pitched peaks.</td></tr>
+              <tr><td>Tapping pick</td><td>Extended</td><td>The pick tapped against the string or sliding into a glissando.</td><td>Rapid, bright and percussive noisy texture.</td></tr>
+              <tr><td>Brushing with contact mic</td><td>Extended</td><td>Contact mic brushed directly against the strings/body.</td><td>Continuous friction noise.</td></tr>
+              <tr><td>Bowing</td><td>Extended</td><td>The string excited with a violin bow.</td><td>Continuous excitation of the string's spectra.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Processing before the mixer</h4>
+        <p>Alongside the physical techniques above, the performer also made use of two pre-mixer effects:</p>
+        <div class="cat-table-wrap">
+          <table class="cat-table">
+            <thead><tr><th>Processing</th><th>Sonic result</th></tr></thead>
+            <tbody>
+              <tr><td>Delay</td><td>Regularly-spaced echo repeats show up as a comb of vertical bands across the whole spectrum.</td></tr>
+              <tr><td>Pitch shifting</td><td>A slower, roughly cyclic frequency shift.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Control techniques</h4>
+        <div class="cat-table-wrap">
+          <table class="cat-table">
+            <thead><tr><th>Gesture</th><th>Sonic effect</th></tr></thead>
+            <tbody>
+              <tr><td>Mixing signals into the Aux channel</td><td>Three effect types depending on feedback state and what's mixed in: an abrupt cut of the feedback, a gradual blend between acoustic and electronic sound, or a morph of the feedback taking on characteristics of the acoustic sound mixed with it.</td></tr>
+              <tr><td>Gain changes</td><td>On the pure feedback channel, changes its nature (sustained tone, pulsar, etc.); on the instrument's channel, changes how strongly the acoustic sound interacts with the feedback: high values mean more interaction, low values less.</td></tr>
+              <tr><td>EQ adjustment</td><td>Morphs the feedback's nature the same way gain does, while also filtering the different spectral regions of the acoustic instrument.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Analysis method</h4>
+        <p>Each technique instance below is a short excerpt (6–20 seconds) cut from one of the six raw improvisations. Every excerpt is processed the same way: a frequency spectrogram (2048-sample STFT, 512-sample hop, 32kHz sample rate) and a 4-band energy trend (80–200Hz, 200–500Hz, 1–2kHz, 4–8kHz), to characterise whether the mixer's feedback loop builds, decays, or holds steady during and immediately after the gesture.</p>
+        <p class="cat-note">The recordings are natively 48kHz, but analysis is at 32kHz (16kHz audible bandwidth) rather than run at full native rate: above roughly 18kHz the recordings carry a persistent, near-flat noise band that doesn't move with the playing and shows up identically in quiet passages regardless of technique. Almost certainly interference from the recording chain itself or my audio interface. Left in, it dominates the brightness statistics for any quiet excerpt therefore I opted for a 16kHz ceiling.</p>
+      </div>
+
+      <!-- GENERAL OVERVIEW & SYNTHESIS -->
+      <div class="cat-section" id="cat-s02-overview">
+        <h3>General Overview &amp; Synthesis</h3>
+        <p class="cat-kicker">The electric guitar and the no-input mixer</p>
+
+        <p>The six raw recordings total 1h 47m of continuous free improvisation; fifteen short excerpts have been pulled from them for this document, spanning six techniques.</p>
+
+        <div class="cat-table-wrap">
+          <table class="cat-table">
+            <thead><tr><th>#</th><th>Recording</th><th>Duration</th><th>Onsets</th></tr></thead>
+            <tbody>
+              <tr><td>01</td><td>First Improvisation</td><td>22:32</td><td>2,657</td></tr>
+              <tr><td>02</td><td>Second Improvisation</td><td>13:14</td><td>1,584</td></tr>
+              <tr><td>03</td><td>Third Improvisation</td><td>15:52</td><td>2,020</td></tr>
+              <tr><td>04</td><td>Fourth Improvisation</td><td>23:11</td><td>2,893</td></tr>
+              <tr><td>05</td><td>Fifth Improvisation</td><td>10:55</td><td>1,342</td></tr>
+              <tr><td>06</td><td>Sixth Improvisation</td><td>13:28</td><td>1,611</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="cat-img-grid cat-img-grid--overview">
+          <figure><img src="images/research/s02/overview/technique-comparison.jpg" loading="lazy" alt="Brightness and noisiness compared across all six techniques"><figcaption>Median spectral centroid and flatness per technique, marker size by number of instances</figcaption></figure>
+        </div>
+
+        <h4>1. The instrument fingerprint</h4>
+        <p>In this session, the structural split is again (see Cymbal) between techniques that supply energy continuously and those that deliver it in discrete pulses. Bowing and brushing with a contact mic, two of the most continuous ones, produce three of the session's four clearest full-spectrum-buildup or slow-climb cases. The discrete techniques (chords, harmonics, and tapping) show a much more mixed picture: some instances build (plucked and strummed chords), others decay (arpeggiated chords) or settle into a narrowband sustain (harmonics) instead.</p>
+
+        <h4>2. A typology of feedback behaviours</h4>
+        <p>Across the fifteen marked instances, the same handful of qualitatively distinct behaviours recur, echoing the typology found in the cymbal session:</p>
+        <div class="cat-table-wrap">
+          <table class="cat-table">
+            <thead><tr><th>Behaviour</th><th>What it looks like</th><th>Clearest examples</th></tr></thead>
+            <tbody>
+              <tr><td>Full-spectrum regenerative buildup</td><td>Every band gains energy together across the window, with no sign of decay</td><td>Bowing II (+2.6 to +9.9dB across all four bands); Delay + pitch shifting (+2.1 to +6.3dB)</td></tr>
+              <tr><td>Frequency-selective sustain</td><td>One mid-register band holds or even gains while the bands around it collapse</td><td>Harmonics III (200–500Hz −0.7dB vs. 80–200Hz −12.1dB); Harmonics II</td></tr>
+              <tr><td>Clean decay / no locking</td><td>Every band fades together, on the instrument's own terms</td><td>Chords arpeggiated; Brushing II (steepest drop in the session, −15.4dB)</td></tr>
+              <tr><td>Cyclic wavering</td><td>Energy rises and falls repeatedly without settling into either buildup or decay</td><td>Tapping pick (glissando); Pitch shifting alone</td></tr>
+              <tr><td>Partial capture</td><td>The low end holds steady while the high end decays with each new attack</td><td>Chords strummed with the pick</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>3. How techniques and material shape the interaction</h4>
+        <p><strong>Attack style decides the outcome:</strong> chords played three ways on the same strings span nearly the whole brightness range of the session. Plucked with attack softened by the volume knob, swells into a frequency lock; Strummed with a pick generates stromng burst of energy follwed by continuous distortion and frequency locks; Arpeggiated reaches the  brighter and thinner frequency bands.</p>
+        <p><strong>Pitched content decides what the loop locks onto:</strong> unlike the cymbal, whose mixer returns to the same six resonant frequencies no matter what struck it, the guitar's harmonics show the loop locking onto whatever pitch is actually played. </p>
+        <p><strong>Some continuous techniques transfer better than others:</strong> a bow, produces the same clean full-spectrum buildup found in the cymbal's own continuous techniques. A contact mic brushed across the strings is far less predictable.</p>
+        <p><strong>The string's own decay competes with how fast it's re-excited:</strong> a plucked string starts decaying the moment contact ends, so whether the loop settles depends on whether the next attack outruns that decay. A single harmonic touch lets the string's own slow decay carry the mixer into a steady hold, while the tapping pick re-excites it so fast that it never gets the chance to do so.</p>
+
+        <h4>4. Overall picture</h4>
+        <p>The guitar's harmonic nature changes what the mixer answers to. Where the cymbal's loop falls back on a small, fixed set of resonances regardless of technique, here it tracks the actual pitch and rhythm of whatever excites the string, whether that's a finger, a pick, a bow, or a contact mic. Attack style and re-excitation speed decide whether the loop settles, builds, or locks onto a note. As with the cymbal, this behaves like a threshold system, except here the threshold responds to how a note was set moving rather than to a fixed property of the mixer itself.</p>
+      </div>
+
+      <!-- CHORDS -->
+      <div class="cat-section" id="cat-s02-chords">
+        <h3>01 — Chords</h3>
+        <p class="cat-kicker">Sources: S02_fourthImprov.wav, S02_firstImprov.wav, S02_secondImprov.wav · plucked, strummed, and arpeggiated chords</p>
+
+        <div class="cat-quick">
+          <div><span class="label">Instances</span><span class="value">3 — plucked, strummed, arpeggiated</span></div>
+          <div><span class="label">Character</span><span class="value">Wide brightness range </span></div>
+          <div><span class="label">Signature behaviour</span><span class="value">Attack style decides everything</span></div>
+        </div>
+
+        <p>The three ways of setting a chord moving produce three different outcomes from the mixer. Plucked with fingers, with the attack softened by the instrument's volume knob: swells smoothly rather than striking, the low and low-mid bands climb for about three seconds and then hold almost flat for the rest of the excerpt, while the top end fades quietly underneath. Strummed with the pick behaves differently: five or six strums are each visible as a sharp broadband transient that decays away in the top band within a couple of seconds, but the 80–200Hz band barely moves across the whole excerpt, holding a near-constant level from strum to strum regardless of what happens above it (mixer locking in). Arpeggiated gives the cleanest decay of the three: the passage excited the high end of the feedback loop, resulting in a grainy high texture, and a 6,812Hz median centroid.</p>
+
+        <div class="cat-img-grid cat-img-grid--pairs">
+          <figure><img src="images/research/s02/chords/gesture-01.jpg" loading="lazy" alt="Spectrogram, Chords, plucked with fingers, volume-knob swell"><figcaption>Plucked with fingers — volume-knob swell</figcaption></figure>
+          <figure><img src="images/research/s02/chords/gesture-02.jpg" loading="lazy" alt="Spectrogram, Chords, strummed with the pick"><figcaption>Strummed with the pick</figcaption></figure>
+          <figure><img src="images/research/s02/chords/gesture-03.jpg" loading="lazy" alt="Spectrogram, Chords, arpeggiated"><figcaption>Arpeggiated</figcaption></figure>
+        </div>
+
+        <h4>Interactions with the NIM</h4>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <h5>Plucked with fingers — volume-knob swell</h5>
+            <span class="ts">S02_fourthImprov.wav · t≈5:06</span>
+            <p>The mixer gradually locks in.</p>
+            <audio controls src="audio/research/s02/chords/01_plucked_fingers.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Strummed with the pick</h5>
+            <span class="ts">S02_firstImprov.wav · t≈17:47</span>
+            <p>Five or six strums each produce a sharp broadband spike that decays away in the top band within a couple of seconds.</p>
+            <audio controls src="audio/research/s02/chords/02_strummed_pick.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Arpeggiated</h5>
+            <span class="ts">S02_secondImprov.wav · t≈0:32</span>
+            <p>Each picked note fades on its own terms while the higher bright frequency area locks into the arpeggio's rhythm.</p>
+            <audio controls src="audio/research/s02/chords/03_arpeggiated.mp3"></audio>
+          </div>
+        </div>
+      </div>
+
+      <!-- HARMONICS -->
+      <div class="cat-section" id="cat-s02-harmonics">
+        <h3>02 — Harmonics</h3>
+        <p class="cat-kicker">Sources: S02_fifthImprov.wav, S02_thirdImprov.wav, S02_fourthImprov.wav · natural harmonics touched off the string</p>
+
+        <div class="cat-quick">
+          <div><span class="label">Instances</span><span class="value">3</span></div>
+          <div><span class="label">Character</span><span class="value">Bright but clean</span></div>
+          <div><span class="label">Signature behaviour</span><span class="value">Frequency-selective sustain</span></div>
+        </div>
+
+        <p>All three harmonics' excerpts share a visible, narrow pitched character, but they diverge in what happens to that pitch over time. The first is a single harmonic around 592Hz with only a very gradual decay across every band. The second shows a run of stepped harmonic touches before settling onto one sustained tone near 330Hz while the low end loses energy. The third pushes that same pattern furthest: the bass drops a full 12.1dB across the window while the 200–500Hz band directly above it barely moves (−0.7dB).</p>
+
+        <div class="cat-img-grid cat-img-grid--pairs">
+          <figure><img src="images/research/s02/harmonics/gesture-01.jpg" loading="lazy" alt="Spectrogram, Harmonics I"><figcaption>Harmonics I</figcaption></figure>
+          <figure><img src="images/research/s02/harmonics/gesture-02.jpg" loading="lazy" alt="Spectrogram, Harmonics II"><figcaption>Harmonics II</figcaption></figure>
+          <figure><img src="images/research/s02/harmonics/gesture-03.jpg" loading="lazy" alt="Spectrogram, Harmonics III"><figcaption>Harmonics III</figcaption></figure>
+        </div>
+
+        <h4>Interactions with the NIM</h4>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <h5>Harmonics I</h5>
+            <span class="ts">S02_fifthImprov.wav · t≈2:38</span>
+            <p>One harmonic pitch around 592Hz sustains for the full 20 seconds with only a very gradual overall decay; every band stays within 2.6dB of where it started, with the mixer barely distorting the signal.</p>
+            <audio controls src="audio/research/s02/harmonics/01.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Harmonics II</h5>
+            <span class="ts">S02_thirdImprov.wav · t≈13:15</span>
+            <p>The first seven seconds show a ladder of discrete pitch steps as different harmonics are touched in sequence; the passage then locks onto a single ~330Hz while the bass underneath collapses by 6.7dB.</p>
+            <audio controls src="audio/research/s02/harmonics/02.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Harmonics III</h5>
+            <span class="ts">S02_fourthImprov.wav · t≈20:13</span>
+            <p>The bass drops a full 12.1dB across the ten-second window. In this case, the feedback locks onto the harmonics, keeping one register alive while letting the rest go.</p>
+            <audio controls src="audio/research/s02/harmonics/03.mp3"></audio>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAPPING PICK -->
+      <div class="cat-section" id="cat-s02-tapping">
+        <h3>03 — Tapping Pick</h3>
+        <p class="cat-kicker">Sources: S02_secondImprov.wav, S02_fourthImprov.wav · the pick tapped against the string, one instance a glissando</p>
+
+        <div class="cat-quick">
+          <div><span class="label">Instances</span><span class="value">2 — one a glissando</span></div>
+          <div><span class="label">Character</span><span class="value">Bright and noisy discrete technique</span></div>
+          <div><span class="label">Signature behaviour</span><span class="value">Dense onsets → texture rather than discrete taps</span></div>
+        </div>
+
+        <p>The glissando excerpt opens with a clean descending pitch line, sliding from around 4kHz down to 1kHz over the first four to five seconds, before breaking into a dense, irregular pattern that doesn't evolve into a steady state: every band stays within a few decibels of its starting level for the rest of the excerpt (the largest drift is only −2.6dB), the tapping re-excites the system too fast for it to either decay away or build up. The second excerpt is much shorter and punchier, in which the feedback visibly begins to capture the low register.</p>
+
+        <div class="cat-img-grid cat-img-grid--pairs">
+          <figure><img src="images/research/s02/tapping/gesture-01.jpg" loading="lazy" alt="Spectrogram, Tapping pick, glissando"><figcaption>Tapping pick (glissando)</figcaption></figure>
+          <figure><img src="images/research/s02/tapping/gesture-02.jpg" loading="lazy" alt="Spectrogram, Tapping pick"><figcaption>Tapping pick</figcaption></figure>
+        </div>
+
+        <h4>Interactions with the NIM</h4>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <h5>Tapping pick (glissando)</h5>
+            <span class="ts">S02_secondImprov.wav · t≈5:50</span>
+            <p>The pick slides, then the tapping turns rapid and irregular; every band stays within a few dB of its starting level.</p>
+            <audio controls src="audio/research/s02/tapping/01_glissando.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Tapping pick</h5>
+            <span class="ts">S02_fourthImprov.wav · t≈13:56</span>
+            <p>A short, punchy six seconds in which the low end gains over 5dB.</p>
+            <audio controls src="audio/research/s02/tapping/02.mp3"></audio>
+          </div>
+        </div>
+      </div>
+
+      <!-- BRUSHING WITH CONTACT MIC -->
+      <div class="cat-section" id="cat-s02-brushing">
+        <h3>04 — Brushing with Contact Mic</h3>
+        <p class="cat-kicker">Sources: S02_firstImprov.wav, S02_secondImprov.wav, S02_fifthImprov.wav · contact mic brushed against the strings/body</p>
+
+        <div class="cat-quick">
+          <div><span class="label">Instances</span><span class="value">3</span></div>
+          <div><span class="label">Character</span><span class="value">From a dark, evolving hold to the brightest excerpt recorded</span></div>
+          <div><span class="label">Signature behaviour</span><span class="value">Continuous friction, sometimes locked, sometimes collapsing</span></div>
+        </div>
+
+        <p>The three brushing excerpts show what continuous friction can do to the loop. The first is a continuous gain: every one of the four bands gains a little energy across the full 20.5 seconds (+1.5 to +3.0dB), building a lock. The second is close to the opposite: a thin, scratchy burst with pitch trails runs for about 4.5 seconds before crashing 6–15dB across every band into near-silence. The third is a striking diagonal sweep climbing from around 130Hz past 8kHz through the middle of the window cuts the broadband hiss before the texture returns to noise.</p>
+
+        <div class="cat-img-grid cat-img-grid--pairs">
+          <figure><img src="images/research/s02/brushing/gesture-01.jpg" loading="lazy" alt="Spectrogram, Brushing with contact mic I"><figcaption>Brushing with contact mic I</figcaption></figure>
+          <figure><img src="images/research/s02/brushing/gesture-02.jpg" loading="lazy" alt="Spectrogram, Brushing with contact mic II"><figcaption>Brushing with contact mic II</figcaption></figure>
+          <figure><img src="images/research/s02/brushing/gesture-03.jpg" loading="lazy" alt="Spectrogram, Brushing with contact mic III"><figcaption>Brushing with contact mic III</figcaption></figure>
+        </div>
+
+        <h4>Interactions with the NIM</h4>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <h5>Brushing with contact mic I</h5>
+            <span class="ts">S02_firstImprov.wav · t≈8:24</span>
+            <p>Every one of the four bands gains a little energy across the full 20.5 seconds (+1.5 to +3.0dB).</p>
+            <audio controls src="audio/research/s02/brushing/01.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Brushing with contact mic II</h5>
+            <span class="ts">S02_secondImprov.wav · t≈6:35</span>
+            <p>A thin, scratchy burst with pitch trails runs.</p>
+            <audio controls src="audio/research/s02/brushing/02.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Brushing with contact mic III</h5>
+            <span class="ts">S02_fifthImprov.wav · t≈3:40</span>
+            <p>Diagonal sweep climbing from around 130Hz past 8kHz through the middle of the window.</p>
+            <audio controls src="audio/research/s02/brushing/03.mp3"></audio>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOWING -->
+      <div class="cat-section" id="cat-s02-bowing">
+        <h3>05 — Bowing</h3>
+        <p class="cat-kicker">Sources: S02_thirdImprov.wav, S02_fourthImprov.wav · the string excited with a violin bow</p>
+
+        <div class="cat-quick">
+          <div><span class="label">Instances</span><span class="value">2 — quick bowing, then slow bowing</span></div>
+          <div><span class="label">Character</span><span class="value">Dark, with a clean continuous buildup</span></div>
+          <div><span class="label">Signature behaviour</span><span class="value">Full-spectrum regenerative growth</span></div>
+        </div>
+
+        <p>Both bowing excerpts show continuous excitation feeding the feedback, but to different degrees. The first, with quick bowing, builds a dense harmonic ladder of stacked partials across the recording; the low end gains 3.6dB while the upper-mid gently recedes. The second, with slow bowing, is a full-spectrum buildup: all four bands gain energy simultaneously.</p>
+
+        <div class="cat-img-grid cat-img-grid--pairs">
+          <figure><img src="images/research/s02/bowing/gesture-01.jpg" loading="lazy" alt="Spectrogram, Bowing I"><figcaption>Bowing I</figcaption></figure>
+          <figure><img src="images/research/s02/bowing/gesture-02.jpg" loading="lazy" alt="Spectrogram, Bowing II"><figcaption>Bowing II</figcaption></figure>
+        </div>
+
+        <h4>Interactions with the NIM</h4>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <h5>Bowing I</h5>
+            <span class="ts">S02_thirdImprov.wav · t≈7:50</span>
+            <p>Quick bowing stacks a dense ladder of partials that builds steadily across the full 18 seconds.</p>
+            <audio controls src="audio/research/s02/bowing/01.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Bowing II</h5>
+            <span class="ts">S02_fourthImprov.wav · t≈4:27</span>
+            <p>All four bands gain energy simultaneously across the window. Continuous bowed excitation feeding the loop faster than it can decay triggers a regenerative buildup.</p>
+            <audio controls src="audio/research/s02/bowing/02.mp3"></audio>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROCESSING BEFORE THE MIXER -->
+      <div class="cat-section" id="cat-s02-processing">
+        <h3>06 — Processing Before the Mixer</h3>
+        <p class="cat-kicker">Source: S02_firstImprov.wav (both excerpts) · guitar-side delay and pitch-shift pedals engaged ahead of the no-input mixer</p>
+
+        <div class="cat-quick">
+          <div><span class="label">Instances</span><span class="value">2</span></div>
+          <div><span class="label">Character</span><span class="value">Dark and controlled</span></div>
+          <div><span class="label">Signature behaviour</span><span class="value">The electronic re-excitation of the system creates complexity</span></div>
+        </div>
+
+        <p>These two excerpts document the guitar's own pre-mixer effects chain at work. With delay and pitch shifting engaged together, regularly spaced echo repeats show up as a comb of vertical bands across the whole spectrum. With pitch shifting alone, roughly five-second waves of rising and falling energy replace the discrete echo repeats, and none of the four bands shows a net gain or loss by the end (largest drift −1.7dB).</p>
+
+        <div class="cat-img-grid cat-img-grid--pairs">
+          <figure><img src="images/research/s02/processing/gesture-01.jpg" loading="lazy" alt="Spectrogram, Delay plus pitch shifting"><figcaption>Delay + pitch shifting</figcaption></figure>
+          <figure><img src="images/research/s02/processing/gesture-02.jpg" loading="lazy" alt="Spectrogram, Pitch shifting"><figcaption>Pitch shifting</figcaption></figure>
+        </div>
+
+        <h4>Interactions with the NIM</h4>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <h5>Delay + pitch shifting</h5>
+            <span class="ts">S02_firstImprov.wav · t≈9:27</span>
+            <p>Regularly spaced repeats show up as a comb of vertical bands across the whole spectrum.</p>
+            <audio controls src="audio/research/s02/processing/01_delay_pitch.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Pitch shifting</h5>
+            <span class="ts">S02_firstImprov.wav · t≈18:28</span>
+            <p>Roughly five-second waves of rising and falling energy.</p>
+            <audio controls src="audio/research/s02/processing/02_pitchshift.mp3"></audio>
+          </div>
+        </div>
+      </div>
+
+      <!-- FINAL IMPROVISATION AS SYNTHESIS -->
+      <div class="cat-section" id="cat-s02-finalimprov">
+        <h3>00 — Final Improvisation as Synthesis</h3>
+        <p class="cat-kicker">Source: S02_fourthImprov.wav (23:11) · four fresh case studies from the session's longest take</p>
+
+        <div class="cat-quick">
+          <div><span class="label">Instances</span><span class="value">4, drawn from across the full 23:11 take</span></div>
+          <div><span class="label">Character</span><span class="value">The threshold behaviours</span></div>
+          <div><span class="label">Signature behaviour</span><span class="value">A spectral swap, a breathing cycle, a buildup</span></div>
+        </div>
+
+        <p>This take confirms what the technique-by-technique studies above suggest separately: the system behaves again like a threshold system that answers to the shape and rhythm of re-excitation. Across these selected moments, the loop moves through nearly every regime documented throughout the session: a quiet reordering of which band leads, a multi-cycle breathing pattern that never resolves, a restless texture settling into a held tone, and a full collapse into silence at the very end. Moreover this take shows how if left alone for long enough, the loop's own accumulated state strongly influences which side of that threshold it lands on next, adapting the morph in relation with the next excitation given by instrument.</p>
+
+        <div class="cat-img-grid cat-img-grid--pairs">
+          <figure><img src="images/research/s02/finalimprov/gesture-01.jpg" loading="lazy" alt="Spectrogram, Final Improv I"><figcaption>Final Improv I</figcaption></figure>
+          <figure><img src="images/research/s02/finalimprov/gesture-02.jpg" loading="lazy" alt="Spectrogram, Final Improv II"><figcaption>Final Improv II</figcaption></figure>
+          <figure><img src="images/research/s02/finalimprov/gesture-03.jpg" loading="lazy" alt="Spectrogram, Final Improv III"><figcaption>Final Improv III</figcaption></figure>
+          <figure><img src="images/research/s02/finalimprov/gesture-04.jpg" loading="lazy" alt="Spectrogram, Final Improv IV"><figcaption>Final Improv IV</figcaption></figure>
+        </div>
+
+        <h4>Interactions with the NIM</h4>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <h5>Final Improv I</h5>
+            <span class="ts">S02_fourthImprov.wav · t≈18:03</span>
+            <p>80 to 200Hz drops 12.5dB while the two bands above it hold or gain slightly; by the end of the window the band that led at the start is the quietest of the four.</p>
+            <audio controls src="audio/research/s02/finalimprov/01.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Final Improv II</h5>
+            <span class="ts">S02_fourthImprov.wav · t≈19:24</span>
+            <p>Every band rises and falls together three times across 26 seconds, never settling into either a hold or a decay.</p>
+            <audio controls src="audio/research/s02/finalimprov/02.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Final Improv III</h5>
+            <span class="ts">S02_fourthImprov.wav · t≈19:58</span>
+            <p>The upper three bands gain 12 to 15dB out of the same jumpy texture documented in the previous excerpt, then hold at the new, brighter level for the rest of the window.</p>
+            <audio controls src="audio/research/s02/finalimprov/03.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Final Improv IV</h5>
+            <span class="ts">S02_fourthImprov.wav · t≈22:48</span>
+            <p>Every band collapses in stages down to near silence, the bass dropping a full 69dB, the steepest collapse documented anywhere in this session.</p>
+            <audio controls src="audio/research/s02/finalimprov/04.mp3"></audio>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATALOGUE OF INTERACTIONS — Session 03: Flute -->
+  <section id="catalogue-s03" class="view">
+    <div class="wrap">
+      <a class="back-link" data-target="catalogue">← Catalogue</a>
+      <div class="section-head">
+        <p class="kicker">Catalogue of Interactions · Session 03</p>
+        <h2>Flute</h2>
+      </div>
+
+      <div class="cat-meta">
+        <div><span class="label">Date</span><span class="value">23 Apr 2026</span></div>
+        <div><span class="label">Location</span><span class="value">Studio Hectolitre</span></div>
+        <div><span class="label">Performer</span><span class="value">Bel McLaughlin</span></div>
+        <div><span class="label">Instrument</span><span class="value">Flute</span></div>
+        <div><span class="label">Mixer</span><span class="value">Mackie 1202-VLZ PRO</span></div>
+        <div><span class="label">Session type</span><span class="value">Free improvisation / sampling session</span></div>
+        <div><span class="label">Duration</span><span class="value">2h</span></div>
+        <div><span class="label">Research focus</span><span class="value">Monodic wind instrument, in interaction with the NIM</span></div>
+      </div>
+
+      <p class="research-intro">
+        The session explores how a wind instrument inserted into the mixer can influence the feedback loops through sustained tones and percussive gestures. It also explores non-conventional techniques operating on the sound-production method such as the use of a contact mic on a specific part of the disassembled instrument.
+      </p>
+
+      <details class="cat-jumpnav">
+        <summary>Jump to</summary>
+        <nav>
+          <a data-target="catalogue-s03">↑ Top</a>
+          <a onclick="document.getElementById('cat-s03-setup').scrollIntoView({behavior:'smooth'})">Setup</a>
+          <a onclick="document.getElementById('cat-s03-overview').scrollIntoView({behavior:'smooth'})">General Overview</a>
+          <a onclick="document.getElementById('cat-s03-constanttone').scrollIntoView({behavior:'smooth'})">Constant Tone / Vibrato / Bend / Air</a>
+          <a onclick="document.getElementById('cat-s03-pizzicato').scrollIntoView({behavior:'smooth'})">Pizzicato</a>
+          <a onclick="document.getElementById('cat-s03-roar').scrollIntoView({behavior:'smooth'})">Roar</a>
+          <a onclick="document.getElementById('cat-s03-keyclick').scrollIntoView({behavior:'smooth'})">Key Clicks</a>
+          <a onclick="document.getElementById('cat-s03-singingplaying').scrollIntoView({behavior:'smooth'})">Singing + Playing</a>
+          <a onclick="document.getElementById('cat-s03-whistletone').scrollIntoView({behavior:'smooth'})">Whistle Tones</a>
+          <a onclick="document.getElementById('cat-s03-improv').scrollIntoView({behavior:'smooth'})">Final Improvisation as Synthesis</a>
+        </nav>
+      </details>
+
+      <nav class="cat-siderail">
+        <span class="rail-label">Jump to</span>
+        <a data-target="catalogue-s03">↑ Top</a>
+        <a onclick="document.getElementById('cat-s03-setup').scrollIntoView({behavior:'smooth'})">Setup</a>
+        <a onclick="document.getElementById('cat-s03-overview').scrollIntoView({behavior:'smooth'})">General Overview</a>
+        <a onclick="document.getElementById('cat-s03-constanttone').scrollIntoView({behavior:'smooth'})">Constant Tone</a>
+        <a onclick="document.getElementById('cat-s03-pizzicato').scrollIntoView({behavior:'smooth'})">Pizzicato</a>
+        <a onclick="document.getElementById('cat-s03-roar').scrollIntoView({behavior:'smooth'})">Roar</a>
+        <a onclick="document.getElementById('cat-s03-keyclick').scrollIntoView({behavior:'smooth'})">Key Clicks</a>
+        <a onclick="document.getElementById('cat-s03-singingplaying').scrollIntoView({behavior:'smooth'})">Singing + Playing</a>
+        <a onclick="document.getElementById('cat-s03-whistletone').scrollIntoView({behavior:'smooth'})">Whistle Tones</a>
+        <a onclick="document.getElementById('cat-s03-improv').scrollIntoView({behavior:'smooth'})">Final Improvisation as Synthesis</a>
+      </nav>
+
+      <!-- SETUP -->
+      <div class="cat-section" id="cat-s03-setup">
+        <h3>Setup</h3>
+        <p class="cat-kicker">Amplification &amp; No-Input Mixer Configuration</p>
+
+        <p>The flute is captured two ways at once: a contact mic on the instrument body and a DPA mic.</p>
+
+        <h4>Mackie 1202-VLZ PRO</h4>
+        <div class="cat-table-wrap">
+          <table class="cat-table">
+            <thead><tr><th>Output</th><th>Input</th></tr></thead>
+            <tbody>
+              <tr><td>Main L/R</td><td>Channel 9/10</td></tr>
+              <tr><td>Channel 1 (from channel insert tip-send)</td><td>Channel 1 (Line)</td></tr>
+              <tr><td>Channel 2 (from channel insert tip-send)</td><td>Channel 2 (Line)</td></tr>
+              <tr><td>Channel 3</td><td>DPA mic</td></tr>
+              <tr><td>Channel 4</td><td>Contact mic</td></tr>
+              <tr><td>Aux 1</td><td>Channel 5/6 L</td></tr>
+              <tr><td>Aux 2</td><td>Channel 5/6 R</td></tr>
+              <tr><td>Tape out (used as output) (RCA to jack)</td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="cat-note">Channels 1 and 2 are self-patched through their own insert tip-send back into their own return, creating a feedback loop built directly into the Mackie's own patch bay.</p>
+
+        <h4>Gain &amp; EQ</h4>
+        <div class="cat-table-wrap">
+          <table class="cat-table">
+            <thead><tr><th>Channel</th><th>Gain (initial)</th><th>EQ</th></tr></thead>
+            <tbody>
+              <tr><td>Ch 1</td><td>+15dB (Line)</td><td>focus on the Mid-High band</td></tr>
+              <tr><td>Ch 2</td><td>+25dB (Line)</td><td>focus on the Mid-Low band</td></tr>
+              <tr><td>Ch 3</td><td>+19dB (XLR)</td><td>Variable, depending on the evolution of the feedback</td></tr>
+              <tr><td>Ch 4</td><td>+25dB (XLR)</td><td>on the extremes of the EQ, depending on the evolution of the feedback </td></tr>
+              <tr><td>Ch 5/6</td><td>Stereo channel (Line)</td><td>Variable, depending on the evolution of the feedback</td></tr>
+              <tr><td>Ch 9/10</td><td>Stereo channel (Line)</td><td>focus on the Low band</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="cat-note">Gain range depends on input type: 0dB to +60dB using XLR, using Line there is a 15dB attenuation up to 45dB at the knob fully up; the stereo channel runs from off +10dBV to +4dBU (no knobs).</p>
+
+        <h4>Control techniques</h4>
+        <div class="cat-table-wrap">
+          <table class="cat-table">
+            <thead><tr><th>Gesture</th><th>Sonic effect</th></tr></thead>
+            <tbody>
+              <tr><td>Mixing signals into the Aux channel</td><td>Three effect types depending on feedback state and what's mixed in: an abrupt cut of the feedback, a gradual blend between acoustic and electronic sound, or a morph of the feedback taking on characteristics of the acoustic sound mixed with it.</td></tr>
+              <tr><td>Gain changes</td><td>On the pure feedback channel, changes its nature (sustained tone, pulsar, etc.); on the instrument's channel, changes how strongly the acoustic sound interacts with the feedback: high values mean more interaction, low values less.</td></tr>
+              <tr><td>EQ adjustment</td><td>Morphs the feedback's nature the same way gain does, while also filtering the different spectral regions of the acoustic instrument.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Instrument techniques</h4>
+        <div class="cat-table-wrap">
+          <table class="cat-table">
+            <thead><tr><th>Technique</th><th>Category</th><th>Description</th><th>Sonic result</th></tr></thead>
+            <tbody>
+              <tr><td>Constant tone</td><td>Conventional</td><td>Sustained tone with varied dynamics and attack modes.</td><td>Stable pitch with rich harmonic content.</td></tr>
+              <tr><td>Vibrato</td><td>Conventional</td><td>Constant tone with periodic pitch/amplitude modulation at different speeds.</td><td>Widens the range around the same reference pitch.</td></tr>
+              <tr><td>Pizzicato</td><td>Conventional</td><td>Percussive, tongued attack — the flute "plucked" rather than blown.</td><td>A clean, low, pitched pop with short attack.</td></tr>
+              <tr><td>Pitch bend</td><td>Extended</td><td>Bending pitch via embouchure while sustaining breath.</td><td>A controlled glide between reference pitches.</td></tr>
+              <tr><td>Air sound</td><td>Extended</td><td>Breath/turbulence noise with no stable embouchure pitch.</td><td>Bright, noisy material.</td></tr>
+              <tr><td>Roar</td><td>Extended</td><td>Embouchure fully covered, tongue rolled, producing a deep growl.</td><td>Almost pure tone rather than noise, with slow attack and release.</td></tr>
+              <tr><td>Key clicks</td><td>Extended</td><td>Purely mechanical finger/key contact against the flute body (no breath involved).</td><td>A clean, percussive resonance across a wide register.</td></tr>
+              <tr><td>Singing + playing</td><td>Extended</td><td>Singing and playing the flute simultaneously.</td><td>Two independent, non-harmonically-related pitches, usually with slow attacks and releases.</td></tr>
+              <tr><td>Whistle tones</td><td>Extended</td><td>Soft, delicate embouchure favouring high overtones over the fundamental.</td><td>Unstable excitement of the overtone series.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Analysis method</h4>
+        <p>Every recording below was processed the same way: onset detection (spectral-flux with backtracking), spectral-feature extraction (centroid, bandwidth, flatness, RMS) on a 2048-sample STFT, segmentation with clustering into acoustic classes, spectral-peak tracking to find recurring "attractor" frequencies, and isolated-onset case studies to see how different acoustic sound morphologies interact with the feedback loop.</p>
+      </div>
+
+      <!-- GENERAL OVERVIEW & SYNTHESIS -->
+      <div class="cat-section" id="cat-s03-overview">
+        <h3>General Overview &amp; Synthesis</h3>
+        <p class="cat-kicker">The flute and the no-input mixer</p>
+
+        <p>The session was structured in two stages: first, systematic, gesture-by-gesture studies that isolated one technique at a time; then, an improvisation that combined everything into a single continuous short performance. Total: 36.0 minutes, 8,267 detected onsets, seven recordings, nine techniques.</p>
+
+        <div class="cat-table-wrap">
+          <table class="cat-table">
+            <thead><tr><th>Recording</th><th>Duration</th><th>Onsets</th><th>Rate</th></tr></thead>
+            <tbody>
+              <tr><td>Constant Tone / Vibrato / Bend / Air</td><td>6:41</td><td>1,223</td><td>3.05/s</td></tr>
+              <tr><td>Pizzicato</td><td>2:44</td><td>820</td><td>5.01/s</td></tr>
+              <tr><td>Roar</td><td>1:46</td><td>507</td><td>4.78/s</td></tr>
+              <tr><td>Key Clicks</td><td>4:46</td><td>1,797</td><td>6.27/s</td></tr>
+              <tr><td>Singing + Playing</td><td>2:59</td><td>392</td><td>2.19/s</td></tr>
+              <tr><td>Whistle Tones</td><td>3:00</td><td>660</td><td>3.66/s</td></tr>
+              <tr><td>Final Improvisation</td><td>14:06</td><td>2,868</td><td>3.39/s</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>1. Different context, different outcome</h4>
+        <p>All breath-and-embouchure techniques (constant tone, air sound, and roar recordings) show tracking into different frequency bands. Yet, in the single gesture session, this locking doesn't excite self-sustained regenerative buildup of the mixer: the feedback release dies at roughly the rate the air is withdrawn. Differently, the short, discrete, breath-free (or nearly so) gestures like pizzicato and key clicks show the opposite: examples of single brief attack triggering multi-second regenerative buildup, frequency-selective sustain, or sudden spontaneous collapse. In the longer, different session of the full improvisation, though, the picture is different: the constant-tone-like region shows a full regenerative buildup. The same technique that showed no such behaviour at all in its own dedicated recording shows a late, spontaneous high-frequency surge with nothing acoustically triggering it. Same technique, different context, different outcome. </p>
+
+        <h4>2. A typology of feedback behaviours</h4>
+        <p>Across both the isolated-decay case studies and the close onset-level pass documented below, the same handful of qualitatively distinct behaviours keep recurring:</p>
+        <div class="cat-table-wrap">
+          <table class="cat-table">
+            <thead><tr><th>Behaviour</th><th>What it looks like</th><th>Clearest examples</th></tr></thead>
+            <tbody>
+              <tr><td>Regenerative buildup</td><td>A quiet or brief touch grows on its own into a sustained resonance</td><td>Pizzicato (t≈91.6s, t≈114.7s); key clicks (throughout); constant tone (improvisation only)</td></tr>
+              <tr><td>Frequency-selective sustain</td><td>One band holds almost flat while neighbouring bands decay normally</td><td>Key clicks (t≈238.3s, t≈229.7s); singing+playing; roar-adjacent material (improvisation)</td></tr>
+              <tr><td>Energy redistribution</td><td>Brightening or darkening without a matching change in loudness (energy moving between registers rather than being added or lost)</td><td>Roar (t≈64.8s, RMS −8dB)</td></tr>
+              <tr><td>Coupled pitch/distortion shift</td><td>Centroid and flatness jump together at the same onset, instead of one following the other</td><td>Constant tone (t≈368.1s)</td></tr>
+              <tr><td>Unpredictable onset outcome</td><td>The same kind of gesture produces opposite results depending on when it lands, not on how hard it's played</td><td>Pizzicato (t≈24.2s darkens/quiets; t≈6.3s brightens/loudens)</td></tr>
+              <tr><td>Sudden collapse with no trigger</td><td>A stable hold ends in a sudden, steep crash with nothing new exciting it</td><td>Whistle tones; the improvisation's rise-then-crash example</td></tr>
+              <tr><td>Slow cumulative drift during a long hold</td><td>Overall energy climbs steadily across a sustained passage rather than staying flat</td><td>Singing+playing</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>No technique produced only one of these; every recording with more than one or two case studies shows at least two different behaviours.</p>
+
+        <h4>3. How locked frequencies behave</h4>
+        <p>The close-listening pass across all six technique recordings turns up at least four distinct patterns of the mixer locking onto a frequency.</p>
+        <p><strong>A single, near-total hold:</strong> Two windows show one lock dominating essentially the entire span with nothing else registering: roar's core buzz (~159Hz) and one constant-tone window (~358Hz).</p>
+        <p><strong>Two locks trading dominance:</strong> In the key-clicks passage and the roar passage, two different frequencies both register as "the strongest peak" at different moments within the same window, neither cleanly replacing the other.</p>
+        <p><strong>A sequence of locks, one after another:</strong> Key clicks' longest excerpt moves through five distinct locks in order; whistle tones' clearest excerpt shows a three-step descent from roughly C9 through A8 to a settled E8 (note precision is rounded to the closest one). The loop finds, holds, and loses a resonance repeatedly across one continuous passage.</p>
+        <p><strong>Simultaneity: two locks at once:</strong> In two singing+playing excerpts, two different locks are present over almost entirely overlapping time spans, not one after another, a direct evidence for that recording's two-independent-sources character. The same pattern turns up in whistle tones, away from any vocal involvement: two simultaneous locks (~1,950Hz and ~5,134Hz, a non-harmonic relationship ratio of 2.63) holding together for nearly nine seconds.</p>
+
+        <h4>4. How technique and material shape the interaction</h4>
+        <p>Register and noisiness separate the instrumental techniques cleanly. Plotting every recording by brightness (centroid) and noisiness (flatness) puts them into clearly separated territory. Roar, pizzicato, and key clicks cluster in the low-centroid, extremely-low-flatness corner, dark and almost perfectly tonal, despite being acoustically very different gestures. Constant tone/vibrato/bend/air and singing+playing sit in the middle. Whistle tones stands alone at the far bright end (6,041Hz).</p>
+        <div class="cat-img-grid cat-img-grid--overview">
+          <figure><img src="images/research/s03/overview/technique-comparison.jpg" loading="lazy" alt="Flute technique comparison across all seven recordings"><figcaption>Brightness vs. noisiness across all seven recordings (marker size = mean onset rate)</figcaption></figure>
+        </div>
+        <p>The physical shape of an attack or release within the feedback loop is set by instrumental technique. Breath-and-embouchure techniques attack and release gradually, 2 to 6 seconds each way, scaling with how much of the gesture has to be physically established or released. Percussive/mechanical techniques (pizzicato, key clicks) attack in well under a tenth of a second. Whistle tones don't have a consistent shape (sometimes a slow, flickering 4-second establishment, sometimes a sub-second snap) this is directly connected with how unstable to control acoustically the technique is. In this scenario the mixer's reactions tend to mirror the boundaries of the physical gesture to then evolve by locking in/blending or morph independently. </p>
+
+        <h4>5. Overall picture</h4>
+        <p>A characteristic of these interactions between a wind instrument and the mixer's feedback underlies how the physical mechanism of the Flute's techniques can reliably determine the shape of its edges (how an attack or release begins and ends). What happens inside that edge, whether an attack triggers multi-second regeneration, locks onto a new frequency, redistributes its energy upward, or simply decays away, depends on the state the loop was already in when the attack landed, at least as much as on the gesture itself. The instrument's role is here closer to deciding which edge of a state shapes the loop excitation instead of determining what's inside it: the physical gesture governs the boundary and the feedback loop's own accumulated state governs everything the boundary contains. Again, this kind of setup tends to behave more as a threshold system.</p>
+      </div>
+
+      <!-- CONSTANT TONE / VIBRATO / BEND / AIR -->
+      <div class="cat-section" id="cat-s03-constanttone">
+        <h3>01 — Constant Tone, Vibrato, Bend, Air</h3>
+        <p class="cat-kicker">Source: S03_ConstantTone_Vib_Bend_Air.wav · 6:41.28 · four techniques in sequence: constant tone, vibrato, pitch bend, air sound</p>
+
+        <div class="cat-quick">
+          <div><span class="label">Dominant locks</span><span class="value">~448Hz (roughly A4) and ~525Hz (roughly C5), recurring across every block</span></div>
+          <div><span class="label">Character</span><span class="value">Four blocks by technique; brightest/noisiest in the vibrato block</span></div>
+          <div><span class="label">Signature behaviour</span><span class="value">Clean tracking, no self-sustaining regeneration; attack/release follows breath directly</span></div>
+          <div><span class="label">Onsets</span><span class="value">1,223 over 6:41 (mean 3.05/s)</span></div>
+        </div>
+
+        <p>The recording has been divided into four blocks, each matching one of the four described techniques almost exactly in both duration and character: Block A is a simple clean tone, Block B is vibrato, Block C is pitch bend, and Block D is air sound.</p>
+
+        <p><strong>Pitch content:</strong> a flute's pitch is set directly by the player, so the dominant frequencies here are best seen as which notes the player chose to play, not a property of the mixer. Two pitches dominate: 448Hz (roughly A4) and 525Hz (roughly C5).</p>
+
+        <div class="cat-img-grid">
+          <figure><img src="images/research/s03/constanttone/spectrogram.jpg" loading="lazy" alt="Constant Tone/Vibrato/Bend/Air — full-take spectrogram"><figcaption>Full-take spectrogram with onset markers and the block timeline</figcaption></figure>
+          <figure><img src="images/research/s03/constanttone/features.jpg" loading="lazy" alt="Constant Tone/Vibrato/Bend/Air — feature curves"><figcaption>RMS, centroid, flatness, onset-rate curves with block shading</figcaption></figure>
+          <figure><img src="images/research/s03/constanttone/attractors.jpg" loading="lazy" alt="Constant Tone/Vibrato/Bend/Air — attractor frequencies"><figcaption>Dominant spectral peak per frame — the ~448/525Hz reference pitches and the pitch-bend glides</figcaption></figure>
+        </div>
+
+        <h4>Interactions</h4>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <img src="images/research/s03/constanttone/moments/01_lock-handoff-at-tail_67s-80s.jpg" loading="lazy" alt="Spectrogram, Constant tone / vibrato / pitch bend / air sound, 1′07″–1′20″">
+            <h5>01 — Lock at the tail</h5>
+            <span class="ts">1′07″–1′20″ · Block A</span>
+            <p>The attractor here (~557Hz, roughly C#5) is present for almost the entire window, with a second lock (~358Hz, roughly F4) only appearing in the final two and a half seconds.</p>
+            <audio controls src="audio/research/s03/constanttone/moments/01_lock-handoff-at-tail_67s-80s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <img src="images/research/s03/constanttone/moments/02_stable-interval-lowest-onset-rate_183s-195s.jpg" loading="lazy" alt="Spectrogram, Constant tone / vibrato / pitch bend / air sound, 3′03″–3′15″">
+            <h5>02 — Most stable interval, lowest onset rate</h5>
+            <span class="ts">3′03″–3′15″ · Block B</span>
+            <p>A single lock (~358Hz, roughly F4) spans the entire fourteen seconds shown. The centroid moves by under 450Hz in either direction and settles back each time.</p>
+            <audio controls src="audio/research/s03/constanttone/moments/02_stable-interval-lowest-onset-rate_183s-195s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <img src="images/research/s03/constanttone/moments/03_onset-density-signals-modulation_288s-296s.jpg" loading="lazy" alt="Spectrogram, Constant tone / vibrato / pitch bend / air sound, 4′48″–4′56″">
+            <h5>03 — Onset real modulation</h5>
+            <span class="ts">4′48″–4′56″ · Block C</span>
+            <p>The attractor (~358Hz, roughly F4) holds for the first ten seconds, but then suddenly glides low.</p>
+            <audio controls src="audio/research/s03/constanttone/moments/03_onset-density-signals-modulation_288s-296s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <img src="images/research/s03/constanttone/moments/05_pitch-distortion-shift-then-reverse_368s-371s.jpg" loading="lazy" alt="Spectrogram, Constant tone / vibrato / pitch bend / air sound, 6′08″–6′11″">
+            <h5>04 — Pitch and distortion shift together</h5>
+            <span class="ts">6′08″–6′11″ · Block D</span>
+            <p>Three locks inside three seconds: starts near C#5, the dominant lock shifts to A#5 within the first quarter-second and holds there, with E6 flickering in briefly around the two-second mark. The two onsets that open the excerpt (t≈368.1s, 368.3s) show centroid and flatness jumping together (+654Hz/+0.012 and +469Hz/+0.011), pitch and distortion changing at the same instant. A third onset (t≈368.9s) reverses both while RMS rises settling into a pure, louder new state.</p>
+            <audio controls src="audio/research/s03/constanttone/moments/05_pitch-distortion-shift-then-reverse_368s-371s.mp3"></audio>
+          </div>
+        </div>
+      </div>
+
+      <!-- PIZZICATO -->
+      <div class="cat-section" id="cat-s03-pizzicato">
+        <h3>02 — Pizzicato</h3>
+        <p class="cat-kicker">Source: S03_pizzicato.wav · 2:43.70 · a percussive, tongued attack</p>
+
+        <div class="cat-quick">
+          <div><span class="label">Dominant lock</span><span class="value">No single lock but a melodic/scalar spread around ~373/470/606Hz</span></div>
+          <div><span class="label">Character</span><span class="value">Dens onsets; darkest, purest tone </span></div>
+          <div><span class="label">Signature behaviour</span><span class="value">Decay duration after attack varies a lot: from clean sub-second death to multi-second regenerative buildup</span></div>
+          <div><span class="label">Onsets</span><span class="value">820 over 2:44 </span></div>
+        </div>
+
+        <p><strong>Pitch content:</strong> peak-tracking shows a noticeably wider, even spread of pitches. </p>
+
+        <div class="cat-img-grid">
+          <figure><img src="images/research/s03/pizzicato/spectrogram.jpg" loading="lazy" alt="Pizzicato — full-take spectrogram"><figcaption>Full-take spectrogram — the registral break is visible in the middle third</figcaption></figure>
+          <figure><img src="images/research/s03/pizzicato/features.jpg" loading="lazy" alt="Pizzicato — feature curves"><figcaption>RMS, centroid, flatness, and onset-rate curves for the full take</figcaption></figure>
+          <figure><img src="images/research/s03/pizzicato/attractors.jpg" loading="lazy" alt="Pizzicato — attractor frequencies"><figcaption>Dominant spectral peak per frame — a melodic/scalar spread rather than a single lock</figcaption></figure>
+        </div>
+
+        <h4>Interactions</h4>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <img src="images/research/s03/pizzicato/moments/01_no-single-outcome-from-attacks_5s-26s.jpg" loading="lazy" alt="Spectrogram, Pizzicato, 0′05″–0′26″">
+            <h5>01 — No single outcome from the attacks</h5>
+            <span class="ts">0′05″–0′26″</span>
+            <p>Peak content spreads continuously across roughly 150–1,200Hz. Outcomes vary onset to onset: the strongest attack in the window is followed by centroid dropping 562Hz and RMS dropping 2.2dB (darkening and quieting) while an earlier, weaker attack (t≈6.3s) brightens and loudens (+748Hz, +3.4dB). </p>
+            <audio controls src="audio/research/s03/pizzicato/moments/01_no-single-outcome-from-attacks_5s-26s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <img src="images/research/s03/pizzicato/moments/02_more-concentrated-more-settled_43s-50s.jpg" loading="lazy" alt="Spectrogram, Pizzicato, 0′43″–0′50″">
+            <h5>02 — More concentrated, more settled</h5>
+            <span class="ts">0′43″–0′50″</span>
+            <p>Peak content concentrates more here, with the ~358Hz region being the most visited. Onset effects are small and consistent: centroid moves by well under 150Hz either way across the six strongest onsets, RMS barely changes.</p>
+            <audio controls src="audio/research/s03/pizzicato/moments/02_more-concentrated-more-settled_43s-50s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <img src="images/research/s03/pizzicato/moments/03_measurable-transition-into-pattern_108s-120s.jpg" loading="lazy" alt="Spectrogram, Pizzicato, 1′48″–2′00″">
+            <h5>03 — A measurable transition into the pattern</h5>
+            <span class="ts">1′48″–2′00″</span>
+            <p>Opens with two brief, very high transient locks (around C9 and C#9, each present for about a second) before settling onto a persistent low lock for the rest of the window. </p>
+            <audio controls src="audio/research/s03/pizzicato/moments/03_measurable-transition-into-pattern_108s-120s.mp3"></audio>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROAR -->
+      <div class="cat-section" id="cat-s03-roar">
+        <h3>03 — Roar</h3>
+        <p class="cat-kicker">Source: S03_rorar.wav · 1:46.02 · embouchure fully covered, tongue rolled, producing a deep growling "roar"</p>
+
+        <div class="cat-quick">
+          <div><span class="label">Dominant locks</span><span class="value">~99Hz (roughly G2), with ~296Hz (roughly D4) as a near-exact third harmonic, across the full recording</span></div>
+          <div><span class="label">Character</span><span class="value">Deep, almost pure tone </span></div>
+          <div><span class="label">Signature behaviour</span><span class="value">Slowest attack/release in the session (~6s onset), no regeneration</span></div>
+          <div><span class="label">Onsets</span><span class="value">507 over 1:46</span></div>
+        </div>
+
+        <p>Almost entirely continuous. The sound is strikingly low. A markedly different, brighter episode interrupts this around 56–65s before settling back into the low, pure register for the second half.</p>
+
+        <p><strong>Pitch content (full recording):</strong> two dominant regions: 99Hz (roughly G2), present almost continuously, and 296Hz (roughly D4, its third harmonic). A secondary lock around 79Hz is also present through the first half.</p>
+
+        <div class="cat-img-grid">
+          <figure><img src="images/research/s03/roar/spectrogram.jpg" loading="lazy" alt="Roar — full-take spectrogram"><figcaption>Full-take spectrogram</figcaption></figure>
+          <figure><img src="images/research/s03/roar/features.jpg" loading="lazy" alt="Roar — feature curves"><figcaption>RMS, centroid, flatness, and onset-rate curves for the full take</figcaption></figure>
+          <figure><img src="images/research/s03/roar/attractors.jpg" loading="lazy" alt="Roar — attractor frequencies"><figcaption>Dominant spectral peak per frame — the ~99/296Hz fundamental/harmonic pair</figcaption></figure>
+        </div>
+
+        <h4>Interactions</h4>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <img src="images/research/s03/roar/moments/01_one-dated-measured-interruption_9s-21s.jpg" loading="lazy" alt="Spectrogram, Roar, 0′09″–0′21″">
+            <h5>01 — One measured interruption</h5>
+            <span class="ts">0′09″–0′21″</span>
+            <p>A single lock (~159Hz, roughly D#3) dominates virtually the entire twelve seconds. The one clear break in the pattern is precisely dated by the onset data: the strongest attack in the window (t≈16.9s, strength 3.14, roughly 7.9s into the excerpt) is followed by centroid jumping +455Hz and RMS rising 5.5dB, before the texture returns to the same low lock.</p>
+            <audio controls src="audio/research/s03/roar/moments/01_one-dated-measured-interruption_9s-21s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <img src="images/research/s03/roar/moments/02_redistribution-not-replacement_61s-66s.jpg" loading="lazy" alt="Spectrogram, Roar, 1′01″–1′06″">
+            <h5>02 — Redistribution</h5>
+            <span class="ts">1′01″–1′06″</span>
+            <p>Median centroid here looks like a completely different register from the core roar texture, but the attractor is still the same ~159Hz lock, present through nearly the whole window. The strongest shift (t≈64.8s) sends centroid up while RMS drops nearly 8dB: energy moving up into the harmonics of the same low anchor, not new loud broadband content arriving on top of it.</p>
+            <audio controls src="audio/research/s03/roar/moments/02_redistribution-not-replacement_61s-66s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <img src="images/research/s03/roar/moments/03_two-locks-trading-dominance_91s-97s.jpg" loading="lazy" alt="Spectrogram, Roar, 1′31″–1′37″">
+            <h5>03 — Two locks trading dominance</h5>
+            <span class="ts">1′31″–1′37″</span>
+            <p>~358Hz (roughly F4) is the more persistent lock here, with ~159Hz (roughly D#3) present but weaker. Onset effects swing both ways: one onset (t≈92.5s) brightens and the others darken, consistent with the core buzzing.</p>
+            <audio controls src="audio/research/s03/roar/moments/03_two-locks-trading-dominance_91s-97s.mp3"></audio>
+          </div>
+        </div>
+      </div>
+
+      <!-- KEY CLICKS -->
+      <div class="cat-section" id="cat-s03-keyclick">
+        <h3>04 — Key Clicks</h3>
+        <p class="cat-kicker">Source: S03_KeyClicks.wav · 4:46.49 · a purely mechanical attack — finger/key contact against the flute body, no breath involved</p>
+
+        <div class="cat-quick">
+          <div><span class="label">Dominant locks</span><span class="value">No single dominant lock</span></div>
+          <div><span class="label">Character</span><span class="value">Densest onset activity in the whole session (mean 6.27/s); purely mechanical, breath-free</span></div>
+          <div><span class="label">Signature behaviour</span><span class="value">Frequency-selective sustain even with zero breath involved</span></div>
+          <div><span class="label">Onsets</span><span class="value">1,797 over 4:46 (mean 6.27/s)</span></div>
+        </div>
+
+        <p>Almost entirely continuous. 1,797 onsets, mean rate 6.27/s. Flatness is very low throughout the take, each click still carries a clear resonant pitch from the air column. Centroid swings as different key/fingering combinations are worked through.</p>
+
+        <div class="cat-img-grid">
+          <figure><img src="images/research/s03/keyclick/spectrogram.jpg" loading="lazy" alt="Key Clicks — full-take spectrogram"><figcaption>Full-take spectrogram with onset markers</figcaption></figure>
+          <figure><img src="images/research/s03/keyclick/features.jpg" loading="lazy" alt="Key Clicks — feature curves"><figcaption>RMS, centroid, flatness, and onset-rate curves for the full take</figcaption></figure>
+          <figure><img src="images/research/s03/keyclick/attractors.jpg" loading="lazy" alt="Key Clicks — attractor frequencies"><figcaption>Dominant spectral peak per frame — a wide spread across different fingerings</figcaption></figure>
+        </div>
+
+        <h4>Interactions</h4>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <img src="images/research/s03/keyclick/moments/01_two-locks-trading-dominance_18s-50s.jpg" loading="lazy" alt="Spectrogram, Key clicks, 0′18″–0′50″">
+            <h5>01 — Two locks trading dominance</h5>
+            <span class="ts">0′18″–0′50″</span>
+            <p>A low lock (~159Hz) is present almost continuously; a higher one (~557Hz) is nearly as persistent from about two seconds in. The two trade which is momentarily stronger rather than one cleanly replacing the other. Individual onsets push centroid substantially in both directions.</p>
+            <audio controls src="audio/research/s03/keyclick/moments/01_two-locks-trading-dominance_18s-50s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <img src="images/research/s03/keyclick/moments/02_three-adjacent-locks-unstable-late_58s-68s.jpg" loading="lazy" alt="Spectrogram, Key clicks, 0′58″–1′08″">
+            <h5>02 — Three adjacent locks, unstable late</h5>
+            <span class="ts">0′58″–1′08″</span>
+            <p>Not one static pitch: the ring moves through three adjacent high locks over the ten seconds (roughly around G8 early, through E8, settling toward C#8 by the end). It isn't perfectly stable.</p>
+            <audio controls src="audio/research/s03/keyclick/moments/02_three-adjacent-locks-unstable-late_58s-68s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <img src="images/research/s03/keyclick/moments/03_uniform-with-one-dated-exception_102s-120s.jpg" loading="lazy" alt="Spectrogram, Key clicks, 1′42″–2′00″">
+            <h5>03 — Uniform, with one dated exception</h5>
+            <span class="ts">1′42″–2′00″</span>
+            <p>A single lock (~159Hz) dominates essentially the entire excerpt. One onset (t≈115.1s) briefly breaks the pattern before the texture returns to the same low, clean lock.</p>
+            <audio controls src="audio/research/s03/keyclick/moments/03_uniform-with-one-dated-exception_102s-120s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <img src="images/research/s03/keyclick/moments/04_five-locks-largest-jumps-session_200s-237s.jpg" loading="lazy" alt="Spectrogram, Key clicks, 3′20″–3′57″">
+            <h5>04 — Five locks, the largest jumps of the session</h5>
+            <span class="ts">3′20″–3′57″</span>
+            <p>Five distinct locks emerge and recede in sequence: around roughly C#9 early, down through C9, settling on C#8 for the bulk of the passage, then dropping to C8 late, all riding over a low ~159Hz lock present throughout. Two onsets in particular (t≈209.3s, 211.5s) are followed by centroid jumps up.</p>
+            <audio controls src="audio/research/s03/keyclick/moments/04_five-locks-largest-jumps-session_200s-237s.mp3"></audio>
+          </div>
+        </div>
+      </div>
+
+      <!-- SINGING + PLAYING -->
+      <div class="cat-section" id="cat-s03-singingplaying">
+        <h3>05 — Singing + Playing</h3>
+        <p class="cat-kicker">Source: S03_SingingPlaying.wav · 2:59.37 · singing and playing the flute simultaneously</p>
+
+        <div class="cat-quick">
+          <div><span class="label">Dominant character</span><span class="value">Multiple simultaneous, non-harmonically-related partials</span></div>
+          <div><span class="label">Character</span><span class="value">Easy to lock with, complex tones</span></div>
+          <div><span class="label">Signature behaviour</span><span class="value">Two locks with overlapping, not sequential, time spans</span></div>
+          <div><span class="label">Onsets</span><span class="value">392 over 2:59 </span></div>
+        </div>
+
+        <p>Direct inspection of the spectrum at several points through the recording consistently turns up multiple simultaneous, non-harmonically-related partials (e.g. at t=20–22s: prominent energy at 193.8Hz, 290.7Hz, 393.0Hz, and 430.7Hz together, none of them is an integer multiple of another).</p>
+
+        <div class="cat-img-grid">
+          <figure><img src="images/research/s03/singingplaying/spectrogram.jpg" loading="lazy" alt="Singing + Playing — full-take spectrogram"><figcaption>Full-take spectrogram — independently-moving dual pitch contours</figcaption></figure>
+          <figure><img src="images/research/s03/singingplaying/features.jpg" loading="lazy" alt="Singing + Playing — feature curves"><figcaption>RMS, centroid, flatness, and onset-rate curves for the full take</figcaption></figure>
+          <figure><img src="images/research/s03/singingplaying/attractors.jpg" loading="lazy" alt="Singing + Playing — attractor frequencies"><figcaption>Dominant spectral peak per frame — recurring locks shared with constant tone and pizzicato</figcaption></figure>
+        </div>
+
+        <h4>Interactions</h4>
+        <p>For each excerpt below, the key evidence for "two sources" is whether the attractors found inside the window have overlapping or sequential time spans.</p>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <img src="images/research/s03/singingplaying/moments/01_two-locks-almost-entirely-overlapping_16s-23s.jpg" loading="lazy" alt="Spectrogram, Singing and playing, 0′16″–0′23″">
+            <h5>01 — Two locks, almost entirely overlapping</h5>
+            <span class="ts">0′16″–0′23″</span>
+            <p>Two locks (~358Hz and ~557Hz) are present over almost entirely overlapping time ranges (0–5.5s and 0.3–9s) rather than one replacing the other; this evidences the presence of two simultaneous sources. Flatness climbs steadily across the six strongest onsets, consistent with the two sources' interaction building in complexity.</p>
+            <audio controls src="audio/research/s03/singingplaying/moments/01_two-locks-almost-entirely-overlapping_16s-23s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <img src="images/research/s03/singingplaying/moments/02_register-drop-later-than-thought_50s-60s.jpg" loading="lazy" alt="Spectrogram, Singing and playing, 0′50″–1′00″">
+            <h5>02 — A register drop</h5>
+            <span class="ts">0′50″–1′00″</span>
+            <p>Again two overlapping locks (~159Hz and ~358Hz).</p>
+            <audio controls src="audio/research/s03/singingplaying/moments/02_register-drop-later-than-thought_50s-60s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <img src="images/research/s03/singingplaying/moments/03_voices-enter-apart-fast-collapse_115s-122s.jpg" loading="lazy" alt="Spectrogram, Singing and playing, 1′55″–2′02″">
+            <h5>03 — Voices enter apart, end in fast collapse</h5>
+            <span class="ts">1′55″–2′02″</span>
+            <p>The ~358Hz lock is present almost from the start; a second, ~159Hz lock only joins partway through (from about 4.8s in): two voices entering at different times. The excerpt ends with a collapse: the final two onsets (t≈120.9s, 121.2s) are followed by RMS dropping 7dB and then 16.6dB in quick succession (a fade out).</p>
+            <audio controls src="audio/research/s03/singingplaying/moments/03_voices-enter-apart-fast-collapse_115s-122s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <img src="images/research/s03/singingplaying/moments/04_bright-opening-not-register-drop_158s-168s.jpg" loading="lazy" alt="Spectrogram, Singing and playing, 2′38″–2′48″">
+            <h5>04 — A bright opening</h5>
+            <span class="ts">2′38″–2′48″</span>
+            <p>Opens with a sharp, loud brightening (the two onsets right at the start (t≈158.15s, 158.23s) before settling into the ~358Hz lock that carries the rest of the window.</p>
+            <audio controls src="audio/research/s03/singingplaying/moments/04_bright-opening-not-register-drop_158s-168s.mp3"></audio>
+          </div>
+        </div>
+      </div>
+
+      <!-- WHISTLE TONES -->
+      <div class="cat-section" id="cat-s03-whistletone">
+        <h3>06 — Whistle Tones</h3>
+        <p class="cat-kicker">Source: S03_whislteTones.wav · 3:00.36 · a very soft, delicate embouchure technique that favours high overtones over the fundamental</p>
+
+        <div class="cat-quick">
+          <div><span class="label">Dominant character</span><span class="value">No single lock but a wide high-register spread from ~400Hz up to 11,000+Hz</span></div>
+          <div><span class="label">Character</span><span class="value">Bright and unstable technique </span></div>
+          <div><span class="label">Signature behaviour</span><span class="value">No consistent attack/release shape</span></div>
+          <div><span class="label">Onsets</span><span class="value">660 over 3:00 </span></div>
+        </div>
+
+        <p>The spectrogram shows a texture markedly more broken-up and discontinuous.</p>
+
+        <div class="cat-img-grid">
+          <figure><img src="images/research/s03/whistletone/spectrogram.jpg" loading="lazy" alt="Whistle Tones — full-take spectrogram"><figcaption>Full-take spectrogram</figcaption></figure>
+          <figure><img src="images/research/s03/whistletone/features.jpg" loading="lazy" alt="Whistle Tones — feature curves"><figcaption>RMS, centroid, flatness, and onset-rate curves for the full take</figcaption></figure>
+          <figure><img src="images/research/s03/whistletone/attractors.jpg" loading="lazy" alt="Whistle Tones — attractor frequencies"><figcaption>Dominant spectral peak per frame — a wide, unsettled high-register spread</figcaption></figure>
+        </div>
+
+        <h4>Interactions</h4>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <img src="images/research/s03/whistletone/moments/01_measurable-descending-settle_30s-43s.jpg" loading="lazy" alt="Spectrogram, Whistle tones, 0′30″–0′43″">
+            <h5>01 — A measurable descending settle</h5>
+            <span class="ts">0′30″–0′43″</span>
+            <p>Starts around roughly C9, drops through A8, and settles on E8 from about six seconds onward, holding there for the rest of the window.</p>
+            <audio controls src="audio/research/s03/whistletone/moments/01_measurable-descending-settle_30s-43s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <img src="images/research/s03/whistletone/moments/02_two-simultaneous-locks-most-settled_74s-83s.jpg" loading="lazy" alt="Spectrogram, Whistle tones, 1′14″–1′23″">
+            <h5>02 — Two simultaneous locks, most settled</h5>
+            <span class="ts">1′14″–1′23″</span>
+            <p>Not one stable pitch but two simultaneous locks (~1,950Hz and ~5,134Hz), both persisting for nearly the entire nine seconds. The ratio between them isn't a clean harmonic relationship, so these could be seen as the technique triggering an independent resonance rather than reinforcing the overtones over the fundamental.</p>
+            <audio controls src="audio/research/s03/whistletone/moments/02_two-simultaneous-locks-most-settled_74s-83s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <img src="images/research/s03/whistletone/moments/03_five-locks-across-four-octaves_95s-105s.jpg" loading="lazy" alt="Spectrogram, Whistle tones, 1′35″–1′45″">
+            <h5>03 — Five locks across nearly four octaves</h5>
+            <span class="ts">1′35″–1′45″</span>
+            <p>Five different locks appear at different points, hopping across nearly four octaves. Adjacent onsets frequently push in opposite directions.</p>
+            <audio controls src="audio/research/s03/whistletone/moments/03_five-locks-across-four-octaves_95s-105s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <img src="images/research/s03/whistletone/moments/04_settling-downward-instead-of-up_146s-156s.jpg" loading="lazy" alt="Spectrogram, Whistle tones, 2′26″–2′36″">
+            <h5>04 — Settling downward instead of up</h5>
+            <span class="ts">2′26″–2′36″</span>
+            <p>Opens with the same kind of wide register-hopping as the first excerpt, but here it doesn't resolve into a bright, settled tone. Instead, three consecutive onsets late in the window (t≈153.4s, 153.9s, 154.2s) in the same direction: a sustained descending line that brings the texture to settle downward.</p>
+            <audio controls src="audio/research/s03/whistletone/moments/04_settling-downward-instead-of-up_146s-156s.mp3"></audio>
+          </div>
+        </div>
+      </div>
+
+      <!-- FULL IMPROVISATION -->
+      <div class="cat-section" id="cat-s03-improv">
+        <h3>00 — Final Improvisation as Synthesis</h3>
+        <p class="cat-kicker">14:05.60 · 2,868 onsets · median centroid 4,867Hz · free improvisation combining all nine techniques explored individually in this session</p>
+
+        <div class="cat-quick">
+          <div><span class="label">Coverage and Character</span><span class="value">14:06 of recording with all nine techniques moved between freely</span></div>
+          <div><span class="label">Adds</span><span class="value">The full behavioural repertoire of the mixer (buildup, sustain, surge, rise-collapse) inside one continuous performance</span></div>
+        </div>
+
+        <div class="cat-table-wrap">
+          <table class="cat-table">
+            <thead><tr><th>Region</th><th>Time</th><th>Technique</th></tr></thead>
+            <tbody>
+              <tr><td>A</td><td>30–135s</td><td>Constant tone / pitch bend</td></tr>
+              <tr><td>B</td><td>135–210s</td><td>Pizzicato</td></tr>
+              <tr><td>C</td><td>210–270s</td><td>Air sound</td></tr>
+              <tr><td>D</td><td>285–345s</td><td>Bright/sustained (unlabelled)</td></tr>
+              <tr><td>E</td><td>360–525s</td><td>Key clicks</td></tr>
+              <tr><td>F</td><td>540–600s</td><td>Roar (tentative)</td></tr>
+              <tr><td>G</td><td>600–645s</td><td>Air sound / singing+playing (breathy)</td></tr>
+              <tr><td>H</td><td>660–825s</td><td>Whistle tones</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="cat-img-grid">
+          <figure><img src="images/research/s03/overview/improv-spectrogram.jpg" loading="lazy" alt="Final Improvisation — full-take spectrogram"><figcaption>Full-take spectrogram (3 panels) with onset markers and the candidate technique-region timeline</figcaption></figure>
+          <figure><img src="images/research/s03/overview/improv-features.jpg" loading="lazy" alt="Final Improvisation — feature curves"><figcaption>RMS, centroid, flatness, and onset-rate curves with region shading</figcaption></figure>
+        </div>
+
+        <h4>Interactions</h4>
+        <p>Four gap-truncated isolated onsets, chosen from across different candidate regions, and together they cover most of the behavioural repertoire documented individually across this session:</p>
+        <div class="cat-img-grid cat-img-grid--pairs">
+          <figure><img src="images/research/s03/overview/improv-gesture-01.jpg" loading="lazy" alt="Spectrogram, Full-spectrum regenerative growth, t≈60s, Region A"><figcaption>Full-spectrum regenerative growth — t ≈ 60s, Region A</figcaption></figure>
+          <figure><img src="images/research/s03/overview/improv-gesture-02.jpg" loading="lazy" alt="Spectrogram, Stable sustain, t≈322s, Region D"><figcaption>Stable sustain — t ≈ 322s, Region D</figcaption></figure>
+          <figure><img src="images/research/s03/overview/improv-gesture-03.jpg" loading="lazy" alt="Spectrogram, Late high-frequency surge, t≈542s, Region F"><figcaption>Late high-frequency surge — t ≈ 542s, Region F</figcaption></figure>
+          <figure><img src="images/research/s03/overview/improv-gesture-04.jpg" loading="lazy" alt="Spectrogram, Rise then collapse, t≈631s, Region G"><figcaption>Rise, then collapse — t ≈ 631s, Region G</figcaption></figure>
+        </div>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <h5>Full-spectrum regenerative growth</h5>
+            <span class="ts">t ≈ 60s · Region A</span>
+            <p>Every band from 2kHz to 16kHz brightens steadily and continuously across the entire window (the same pattern as the constant-tone recording examples, but sustained over a notably long window here).</p>
+            <audio controls src="audio/research/s03/improvisation/01_fullspectrum_regenerative_growth_t60s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Stable sustain</h5>
+            <span class="ts">t ≈ 322s · Region D</span>
+            <p>Holds within a tight range for the full 15 seconds.</p>
+            <audio controls src="audio/research/s03/improvisation/02_stable_sustain_t322s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Late high-frequency surge</h5>
+            <span class="ts">t ≈ 542s · Region F</span>
+            <p>Low bands stay essentially flat throughout the entire excerpt.</p>
+            <audio controls src="audio/research/s03/improvisation/03_late_highfreq_surge_t542s.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Rise, then collapse</h5>
+            <span class="ts">t ≈ 631s · Region G</span>
+            <p>Every band climbs together to a peak around t=3s, then all crash together 15–20dB by t=6–8s.</p>
+            <audio controls src="audio/research/s03/improvisation/04_rise_then_collapse_t631s.mp3"></audio>
+          </div>
+        </div>
+      </div>
+
+      <a class="back-link" data-target="catalogue" style="margin-top:36px;">← Back to Catalogue</a>
+    </div>
+  </section>
+
+  <!-- CATALOGUE OF INTERACTIONS — Session 04: Clarinet -->
+  <section id="catalogue-s04" class="view">
+    <div class="wrap">
+      <a class="back-link" data-target="catalogue">← Catalogue</a>
+      <div class="section-head">
+        <p class="kicker">Catalogue of Interactions · Session 04</p>
+        <h2>Clarinet</h2>
+      </div>
+
+      <div class="cat-meta">
+        <div><span class="label">Date</span><span class="value">20 May 2026</span></div>
+        <div><span class="label">Location</span><span class="value">Studio Hectolitre</span></div>
+        <div><span class="label">Performer</span><span class="value">Ghazal Faghihi</span></div>
+        <div><span class="label">Instrument</span><span class="value">Clarinet in B♭</span></div>
+        <div><span class="label">Mixer</span><span class="value">Mackie 1202-VLZ PRO</span></div>
+        <div><span class="label">Session type</span><span class="value">Free improvisation / sampling session</span></div>
+        <div><span class="label">Duration</span><span class="value">2h</span></div>
+        <div><span class="label">Research focus</span><span class="value">Conventional and extended reed techniques, in interaction with the NIM</span></div>
+      </div>
+
+      <p class="research-intro">
+        The session explores how a wind instrument, in this specific case a reed, inserted into the mixer can influence the feedback loops and vice versa. It also explores non-conventional techniques operating on the sound-production method.
+      </p>
+
+      <details class="cat-jumpnav">
+        <summary>Jump to</summary>
+        <nav>
+          <a data-target="catalogue-s04">↑ Top</a>
+          <a onclick="document.getElementById('cat-s04-setup').scrollIntoView({behavior:'smooth'})">Setup</a>
+          <a onclick="document.getElementById('cat-s04-overview').scrollIntoView({behavior:'smooth'})">General Overview</a>
+          <a onclick="document.getElementById('cat-s04-cleantone').scrollIntoView({behavior:'smooth'})">Clean Tone</a>
+          <a onclick="document.getElementById('cat-s04-overblown').scrollIntoView({behavior:'smooth'})">Overblown</a>
+          <a onclick="document.getElementById('cat-s04-multiphonics').scrollIntoView({behavior:'smooth'})">Multiphonic</a>
+          <a onclick="document.getElementById('cat-s04-teeth').scrollIntoView({behavior:'smooth'})">Teeth on the Reed</a>
+          <a onclick="document.getElementById('cat-s04-keyclicks').scrollIntoView({behavior:'smooth'})">Key Clicks</a>
+          <a onclick="document.getElementById('cat-s04-finalimprov').scrollIntoView({behavior:'smooth'})">Final Improvisation as Synthesis</a>
+        </nav>
+      </details>
+
+      <nav class="cat-siderail">
+        <span class="rail-label">Jump to</span>
+        <a data-target="catalogue-s04">↑ Top</a>
+        <a onclick="document.getElementById('cat-s04-setup').scrollIntoView({behavior:'smooth'})">Setup</a>
+        <a onclick="document.getElementById('cat-s04-overview').scrollIntoView({behavior:'smooth'})">General Overview</a>
+        <a onclick="document.getElementById('cat-s04-cleantone').scrollIntoView({behavior:'smooth'})">Clean Tone</a>
+        <a onclick="document.getElementById('cat-s04-overblown').scrollIntoView({behavior:'smooth'})">Overblown</a>
+        <a onclick="document.getElementById('cat-s04-multiphonics').scrollIntoView({behavior:'smooth'})">Multiphonic</a>
+        <a onclick="document.getElementById('cat-s04-teeth').scrollIntoView({behavior:'smooth'})">Teeth on the Reed</a>
+        <a onclick="document.getElementById('cat-s04-keyclicks').scrollIntoView({behavior:'smooth'})">Key Clicks</a>
+        <a onclick="document.getElementById('cat-s04-finalimprov').scrollIntoView({behavior:'smooth'})">Final Improvisation as Synthesis</a>
+      </nav>
+
+      <!-- SETUP -->
+      <div class="cat-section" id="cat-s04-setup">
+        <h3>Setup</h3>
+        <p class="cat-kicker">Amplification &amp; No-Input Mixer Configuration</p>
+
+        <p>The clarinet is captured with a condenser mic into Channel 3.</p>
+
+        <h4>Mackie 1202-VLZ PRO</h4>
+        <div class="cat-table-wrap">
+          <table class="cat-table">
+            <thead><tr><th>Output</th><th>Input</th></tr></thead>
+            <tbody>
+              <tr><td>Main L/R</td><td>Channel 7/8 L/R</td></tr>
+              <tr><td>Channel 1 (from channel insert tip-send)</td><td>Channel 1</td></tr>
+              <tr><td>Channel 2 (from channel insert tip-send)</td><td>Channel 2</td></tr>
+              <tr><td>Clarinet</td><td>Channel 3 (XLR)</td></tr>
+              <tr><td>Channel 4 (from channel insert tip-send)</td><td>Channel 4</td></tr>
+              <tr><td>Aux 1</td><td>Channel 5/6 L</td></tr>
+              <tr><td>Control room L</td><td>Channel 9/10 L</td></tr>
+              <tr><td>Tape out (used as output) (RCA to jack)</td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Gain &amp; EQ</h4>
+        <div class="cat-table-wrap">
+          <table class="cat-table">
+            <thead><tr><th>Channel</th><th>Gain (initial)</th><th>EQ</th></tr></thead>
+            <tbody>
+              <tr><td>Ch 1</td><td>+15dB (Line)</td><td>Equal low and high</td></tr>
+              <tr><td>Ch 3</td><td>+25dB (Line)</td><td>focus on the Mid bands</td></tr>
+              <tr><td>Ch 3</td><td>+15dB (XLR)</td><td>Equal low and high</td></tr>
+              <tr><td>Ch 4</td><td>+25dB (XLR)</td><td>HPF on + high focus</td></tr>
+              <tr><td>Ch 5/6</td><td>Stereo channel (Line)</td><td>Variable, depending on the evolution of the feedback</td></tr>
+              <tr><td>St 9/10</td><td>Stereo channel (Line)</td><td>Equal low and high</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="cat-note">Gain range depends on input type: 0dB to +60dB using XLR, using Line there is a 15dB attenuation up to 45dB at the knob fully up; the stereo channel runs from off +10dBV to +4dBU (no knobs).</p>
+
+        <h4>Instrument techniques</h4>
+        <div class="cat-table-wrap">
+          <table class="cat-table">
+            <thead><tr><th>Technique</th><th>Category</th><th>Description</th><th>Sonic result</th></tr></thead>
+            <tbody>
+              <tr><td>Clean tone — slow attack</td><td>Conventional</td><td>A held tone with a gradual, breath-controlled onset.</td><td>Tracks the physical attack closely; no independent continuation once the tone stabilises.</td></tr>
+              <tr><td>Clean tone — beatings</td><td>Conventional</td><td>A held clean tone during which audible beating appears.</td><td>A fast, regular amplitude oscillation rides on top of the sustained tone.</td></tr>
+              <tr><td>Clean tone — short attack</td><td>Conventional</td><td>Fast, percussive-adjacent articulation rather than a single sustained attack.</td><td>Rapid alternation between distinct spectral states rather than one smooth curve.</td></tr>
+              <tr><td>Overblown</td><td>Extended</td><td>The reed overblown into an unstable upper register.</td><td>Erratic, jumpy swings rather than a smooth trend — the reed's own instability carried through largely unfiltered.</td></tr>
+              <tr><td>Multiphonic</td><td>Extended</td><td>A special fingering producing multiple simultaneous pitches from one instrument.</td><td>A continuously unsettled, finely fluctuating texture — sometimes clean beating, sometimes erratic and pulsar-like.</td></tr>
+              <tr><td>Teeth on the reed</td><td>Extended</td><td>Teeth placed directly on the reed instead of the normal embouchure.</td><td>Dense, bright, buzzy texture; unstable at the transients, more settled once established.</td></tr>
+              <tr><td>Key clicks</td><td>Extended</td><td>Purely mechanical finger/key contact against the clarinet body, with or without breath through the instrument.</td><td>Without air: a mechanical tap on an otherwise unexcited tube, capable of triggering spontaneous multi-second regeneration on its own. With air: continuously fed by breath, brighter and denser throughout.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h4>Analysis method</h4>
+        <p>Each technique instance below is a short excerpt (7–22 seconds) cut from one of the raw recordings. Every excerpt is processed the same way: a log-frequency spectrogram (2048-sample STFT, 512-sample hop, native 44.1kHz sample rate) and a 4-band energy trend (80–200Hz, 200–500Hz, 1–2kHz, 4–8kHz), to characterise whether the mixer's feedback loop builds, decays, or holds steady during and immediately after the gesture.</p>
+      </div>
+
+      <!-- GENERAL OVERVIEW & SYNTHESIS -->
+      <div class="cat-section" id="cat-s04-overview">
+        <h3>General Overview &amp; Synthesis</h3>
+        <p class="cat-kicker">The clarinet and the no-input mixer</p>
+
+        <p>The session recorded six takes. The first five are sources of the seventeen excerpts documented on this page; the sixth is a final improvisation.</p>
+
+        <div class="cat-table-wrap">
+          <table class="cat-table">
+            <thead><tr><th>Recording</th><th>Duration</th><th>Onsets</th><th>Rate</th></tr></thead>
+            <tbody>
+              <tr><td>Clean Tone</td><td>6:01</td><td>1,225</td><td>3.39/s</td></tr>
+              <tr><td>Overblowing</td><td>2:24</td><td>334</td><td>2.32/s</td></tr>
+              <tr><td>Multiphonics</td><td>5:56</td><td>769</td><td>2.16/s</td></tr>
+              <tr><td>Teeth on Reed</td><td>2:35</td><td>743</td><td>4.80/s</td></tr>
+              <tr><td>Key Clicks (with/without air)</td><td>2:49</td><td>1,016</td><td>6.01/s</td></tr>
+              <tr><td>Final Improvisation</td><td>9:13</td><td>1,269</td><td>2.29/s</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="cat-table-wrap">
+          <table class="cat-table">
+            <thead><tr><th>Technique</th><th>Instances</th><th>Character</th></tr></thead>
+            <tbody>
+              <tr><td>Clean Tone</td><td>5</td><td>Controlled and tonal; attack style is the main source of variation</td></tr>
+              <tr><td>Overblown</td><td>3</td><td>Erratic and jumpy</td></tr>
+              <tr><td>Multiphonic</td><td>4</td><td>Darkest and most tonal on average</td></tr>
+              <tr><td>Teeth on the Reed</td><td>2</td><td>Brigh technique, dense and buzzy</td></tr>
+              <tr><td>Key Clicks</td><td>3</td><td>Wide and dense range: a dark, discrete mechanical click next</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="cat-img-grid cat-img-grid--overview">
+          <figure><img src="images/research/s04/overview/technique-comparison.jpg" loading="lazy" alt="Brightness and noisiness compared across all five techniques"><figcaption>Median spectral centroid and flatness per technique, marker size by number of instances</figcaption></figure>
+        </div>
+
+        <h4>1. The instrument fingerprint</h4>
+        <p>The session's own overview already establishes this at the full-recording level — multiphonics is the darkest and most tonal recording overall, teeth on reed the brightest, while noisiness itself actually peaks with overblowing. The seventeen excerpts on this page show how the system's stability its directly influenced by the sound production of the clarinet. Unlike the flute, the reed makes tones and attacks more controllable and less airy, allowing the clarinet to excite the mixer and almost control it. This sums up the acoustic morphology of the instrument (odd harmonics / square wave-like), creating a signal capable of triggering the mixer as well as directing the feedback or letting it start to then interact with it.</p>
+
+        <h4>2. How technique and material shape the interaction</h4>
+        <p><strong>Complicate fingerings swings from buildup to collapse:</strong> Multiphonic IV gains 26.5 to 27.9dB across all four bands, one of the largest buildups documented in the session, while Multiphonic III, cut from the same recording only 35 seconds earlier, collapses by 8 to 15dB. The same fingering produces two opposite results based on the control applied over the tone sustain.</p>
+        <p><strong>Breath is not required for the loop to regenerate:</strong> the Key Clicks recording's without-air condition, still triggers spontaneous multi-second regeneration, climbing 9 to 12dB across all four bands. Whatever catches and re-amplifies these brief mechanical taps is affected entirely by the air introduced.</p>
+        <p><strong>Displacing the embouchure changes where the instability hits:</strong> the Teeth on the reed technique introduces other than breath control, direct mechanical contact, producing a bright, densest technique, unstable at the attack and only settling once the tone is established, the opposite order from overblowing, whose instability runs through the whole excerpt with no settling at all.</p>
+
+        <h4>3. Overall picture</h4>
+        <p>What decides the outcome here is not the reed's register but how its stability is disrupted. The same fingering can push the loop into very different results, and a purely mechanical tap with no breath at all can trigger the same kind of regeneration a sustained tone can. As with the other sessions, this behaves like a threshold system, except here the threshold responds to the reed's instability rather than to the note being played. Furthermore, the acoustic nature of the instrument is capable of more interconnected interactions with the system.</p>
+      </div>
+
+      <!-- CLEAN TONE -->
+      <div class="cat-section" id="cat-s04-cleantone">
+        <h3>01 — Clean Tone</h3>
+        <p class="cat-kicker">Source: CleanTone_S04.wav · slow attack, beatings, and short attack</p>
+
+        <div class="cat-quick">
+          <div><span class="label">Instances</span><span class="value">5 — slow attack, beatings ×2, short attack ×2</span></div>
+          <div><span class="label">Character</span><span class="value">Controlled and tonal</span></div>
+          <div><span class="label">Signature behaviour</span><span class="value">Attack style is the main source of variation</span></div>
+        </div>
+
+        <p>The slow-attack excerpt, as expected, establishes more gradually. The two beatings excerpts both carry a fast, regular oscillation on top of the sustained tone, where the frequency band traces a dense, continuous zigzag for almost the entire eight-second window. The two short-attack excerpts both show rapid alternation between distinct spectral states: several short, percussive-adjacent attacks in quick succession.</p>
+
+        <div class="cat-img-grid cat-img-grid--pairs">
+          <figure><img src="images/research/s04/cleantone/gesture-01.jpg" loading="lazy" alt="Spectrogram, Clean Tone, slow attack"><figcaption>Slow attack</figcaption></figure>
+          <figure><img src="images/research/s04/cleantone/gesture-02.jpg" loading="lazy" alt="Spectrogram, Clean Tone, beatings I"><figcaption>Beatings I</figcaption></figure>
+          <figure><img src="images/research/s04/cleantone/gesture-03.jpg" loading="lazy" alt="Spectrogram, Clean Tone, beatings II"><figcaption>Beatings II</figcaption></figure>
+          <figure><img src="images/research/s04/cleantone/gesture-04.jpg" loading="lazy" alt="Spectrogram, Clean Tone, short attack I"><figcaption>Short attack I</figcaption></figure>
+          <figure><img src="images/research/s04/cleantone/gesture-05.jpg" loading="lazy" alt="Spectrogram, Clean Tone, short attack II"><figcaption>Short attack II</figcaption></figure>
+        </div>
+
+        <h4>Interactions with the NIM</h4>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <h5>Slow attack</h5>
+            <span class="ts">CleanTone_S04.wav · t≈0:13</span>
+            <p>The tone sounds steadily for about four seconds, drops out almost entirely for roughly a second, then climbs back with a more re-attack.</p>
+            <audio controls src="audio/research/s04/cleantone/01_slow_attack.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Beatings I</h5>
+            <span class="ts">CleanTone_S04.wav · t≈0:33</span>
+            <p>An initial broadband burst gives way to a steadier tone; the low end climbs gradually over the following ten seconds to match the more stable mid and high bands.</p>
+            <audio controls src="audio/research/s04/cleantone/02_beatings_a.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Beatings II</h5>
+            <span class="ts">CleanTone_S04.wav · t≈2:57</span>
+            <p>The 4–8kHz band traces a continuous, regular zigzag riding on top of an otherwise held tone.</p>
+            <audio controls src="audio/research/s04/cleantone/03_beatings_b.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Short attack I</h5>
+            <span class="ts">CleanTone_S04.wav · t≈2:13</span>
+            <p>Rather than one sustained gesture, the window shows a series of distinct spectral states alternating short, percussive-adjacent attacks.</p>
+            <audio controls src="audio/research/s04/cleantone/04_short_attack_a.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Short attack II</h5>
+            <span class="ts">CleanTone_S04.wav · t≈2:23</span>
+            <p>The pattern of quick, distinct attacks continues across this second with the low end repeatedly dropping out and re-establishing.</p>
+            <audio controls src="audio/research/s04/cleantone/05_short_attack_b.mp3"></audio>
+          </div>
+        </div>
+      </div>
+
+      <!-- OVERBLOWN -->
+      <div class="cat-section" id="cat-s04-overblown">
+        <h3>02 — Overblown</h3>
+        <p class="cat-kicker">Source: Overblown_S04.wav · the reed overblown into an unstable upper register</p>
+
+        <div class="cat-quick">
+          <div><span class="label">Instances</span><span class="value">3</span></div>
+          <div><span class="label">Character</span><span class="value">Erratic</span></div>
+          <div><span class="label">Signature behaviour</span><span class="value">The reed's own instability, largely unfiltered</span></div>
+        </div>
+
+        <p>All three excerpts show the same jumpy, unsettled character. Nothing here could seem like as the loop developing something independently so much as directly carrying through the acoustic unpredictability of an overblown reed. The first and second excerpts swing repeatedly between loud and quiet across every band with no stretch settling into a lock. The third shows a distinct rhythmic pulsing: short, regular silences interspersed with bursts of held tone, a rougher and more mechanical-sounding pattern than the other two excerpts' continuous jumpiness.</p>
+
+        <div class="cat-img-grid cat-img-grid--pairs">
+          <figure><img src="images/research/s04/overblown/gesture-01.jpg" loading="lazy" alt="Spectrogram, Overblown I"><figcaption>Overblown I</figcaption></figure>
+          <figure><img src="images/research/s04/overblown/gesture-02.jpg" loading="lazy" alt="Spectrogram, Overblown II"><figcaption>Overblown II</figcaption></figure>
+          <figure><img src="images/research/s04/overblown/gesture-03.jpg" loading="lazy" alt="Spectrogram, Overblown III"><figcaption>Overblown III</figcaption></figure>
+        </div>
+
+        <h4>Interactions with the NIM</h4>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <h5>Overblown I</h5>
+            <span class="ts">Overblown_S04.wav · t≈0:08</span>
+            <p>Every band swings repeatedly between loud and quiet across the full eight seconds, briefly dropping out around t≈4s and t≈9s before recovering.</p>
+            <audio controls src="audio/research/s04/overblown/01.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Overblown II</h5>
+            <span class="ts">Overblown_S04.wav · t≈0:31</span>
+            <p>A brighter, noisier passage than the other two excerpts, but showing the same repeated swings between loud and quiet rather than a stable hold.</p>
+            <audio controls src="audio/research/s04/overblown/02.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Overblown III </h5>
+            <span class="ts">Overblown_S04.wav · t≈1:47</span>
+            <p>Short, regular silences interspersed with bursts of held tone. A rougher, more mechanical-sounding pattern than the other two excerpts, consistent with the acoustic sound distorting into the mixer's own pulsar.</p>
+            <audio controls src="audio/research/s04/overblown/03_pulsar.mp3"></audio>
+          </div>
+        </div>
+      </div>
+
+      <!-- MULTIPHONIC -->
+      <div class="cat-section" id="cat-s04-multiphonics">
+        <h3>03 — Multiphonic</h3>
+        <p class="cat-kicker">Source: multiphonics_S04.wav · a special fingering producing multiple simultaneous pitches</p>
+
+        <div class="cat-quick">
+          <div><span class="label">Instances</span><span class="value">4</span></div>
+          <div><span class="label">Character</span><span class="value">Darkest and most tonal </span></div>
+          <div><span class="label">Signature behaviour</span><span class="value">From clean beating to the extreme buildup and collapse</span></div>
+        </div>
+
+        <p>The four multiphonic excerpts cover a wide range in their own right. The first shows a slow, wandering shift between registers rather than a single settled fingering. The second sits inside the recording's bright stretch and carries a clear, dense oscillation in the 200–500Hz band for several seconds. The third shows a rougher, faster, more chaotic version of the same oscillation alongside a real collapse, with every band losing 8–15dB. The fourth, after an unsettled opening, shows every band gaining between 15 and 28dB, a full-spectrum buildup roughly a hundredfold in power.</p>
+
+        <div class="cat-img-grid cat-img-grid--pairs">
+          <figure><img src="images/research/s04/multiphonics/gesture-01.jpg" loading="lazy" alt="Spectrogram, Multiphonic I"><figcaption>Multiphonic I</figcaption></figure>
+          <figure><img src="images/research/s04/multiphonics/gesture-02.jpg" loading="lazy" alt="Spectrogram, Multiphonic II"><figcaption>Multiphonic II</figcaption></figure>
+          <figure><img src="images/research/s04/multiphonics/gesture-03.jpg" loading="lazy" alt="Spectrogram, Multiphonic III"><figcaption>Multiphonic III</figcaption></figure>
+          <figure><img src="images/research/s04/multiphonics/gesture-04.jpg" loading="lazy" alt="Spectrogram, Multiphonic IV"><figcaption>Multiphonic IV</figcaption></figure>
+        </div>
+
+        <h4>Interactions with the NIM</h4>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <h5>Multiphonic I</h5>
+            <span class="ts">multiphonics_S04.wav · t≈0:06</span>
+            <p>The balance between low and high bands shifts back and forth across the window instead of settling on one fingering's register.</p>
+            <audio controls src="audio/research/s04/multiphonics/01.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Multiphonic II</h5>
+            <span class="ts">multiphonics_S04.wav · t≈1:29</span>
+            <p>The 200–500Hz band develops a clear, regular, fast oscillation for several seconds, creating audible beating between two closely-spaced simultaneous pitches.</p>
+            <audio controls src="audio/research/s04/multiphonics/02.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Multiphonic III </h5>
+            <span class="ts">multiphonics_S04.wav · t≈4:18</span>
+            <p>A faster, more chaotic version of Multiphonic II's beating gives way to every band losing 8–15dB; the acoustic sound distorting and blending into the mixer's own pulsar.</p>
+            <audio controls src="audio/research/s04/multiphonics/03_pulsar.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Multiphonic IV</h5>
+            <span class="ts">multiphonics_S04.wav · t≈3:30</span>
+            <p>After an unsettled opening, all four bands gain 15–28dB, leaning towards a full-spectrum regenerative buildup found in this session.</p>
+            <audio controls src="audio/research/s04/multiphonics/04.mp3"></audio>
+          </div>
+        </div>
+      </div>
+
+      <!-- TEETH ON THE REED -->
+      <div class="cat-section" id="cat-s04-teeth">
+        <h3>04 — Teeth on the Reed</h3>
+        <p class="cat-kicker">Source: TeethOnReed_S04.wav · teeth placed directly on the reed instead of the normal embouchure</p>
+
+        <div class="cat-quick">
+          <div><span class="label">Instances</span><span class="value">2</span></div>
+          <div><span class="label">Character</span><span class="value">Dense and buzzy throughout</span></div>
+          <div><span class="label">Signature behaviour</span><span class="value">Unstable at the transients, more settled once established</span></div>
+        </div>
+
+        <p>Both excerpts carry the dense, bright, buzzy texture. The first excerpt, closer to the start of the take, shows a genuine buildup: every band gains 12–21dB across the window, the reed's altered contact catching and amplifying rather than settling. The second, a little further into the recording, is calmer by comparison, but still dense and jagged from moment to moment, but with a smaller net gain (2–4dB across most bands).</p>
+
+        <div class="cat-img-grid cat-img-grid--pairs">
+          <figure><img src="images/research/s04/teeth/gesture-01.jpg" loading="lazy" alt="Spectrogram, Teeth on the Reed I"><figcaption>Teeth on the Reed I</figcaption></figure>
+          <figure><img src="images/research/s04/teeth/gesture-02.jpg" loading="lazy" alt="Spectrogram, Teeth on the Reed II"><figcaption>Teeth on the Reed II</figcaption></figure>
+        </div>
+
+        <h4>Interactions with the NIM</h4>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <h5>Teeth on the Reed I</h5>
+            <span class="ts">TeethOnReed_S04.wav · t≈0:18</span>
+            <p>Every band gains 12–21dB across the twelve-second window.</p>
+            <audio controls src="audio/research/s04/teeth/01.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Teeth on the Reed II</h5>
+            <span class="ts">TeethOnReed_S04.wav · t≈0:50</span>
+            <p>A smaller, still buzzy, texture moment.</p>
+            <audio controls src="audio/research/s04/teeth/02.mp3"></audio>
+          </div>
+        </div>
+      </div>
+
+      <!-- KEY CLICKS -->
+      <div class="cat-section" id="cat-s04-keyclicks">
+        <h3>05 — Key Clicks</h3>
+        <p class="cat-kicker">Source: KeyClicks_S04.wav · purely mechanical finger/key contact against the body, with and without breath</p>
+
+        <div class="cat-quick">
+          <div><span class="label">Instances</span><span class="value">3, one "with air"</span></div>
+          <div><span class="label">Character</span><span class="value">A dark, discrete mechanical click </span></div>
+          <div><span class="label">Signature behaviour</span><span class="value">The without-air click regenerates differently on its own while breath keeps the loop locked.</span></div>
+        </div>
+
+        <p>The first excerpt shows the without-air condition: rather than a clean decay after each tap, every one of the four bands climbs steadily by 9–12dB across the ten-second window. The second is the odd one out: the brightest, densest excerpt in the technique, and the only one where every band declines rather than builds. The third, with-air, stays bright and dense throughout and keeps building regardless: all four bands still gain 7–10dB across the six-second window, breath keeping the loop fed independently of whatever the clicks themselves are doing.</p>
+
+        <div class="cat-img-grid cat-img-grid--pairs">
+          <figure><img src="images/research/s04/keyclicks/gesture-01.jpg" loading="lazy" alt="Spectrogram, Key Clicks I"><figcaption>Key Clicks I</figcaption></figure>
+          <figure><img src="images/research/s04/keyclicks/gesture-02.jpg" loading="lazy" alt="Spectrogram, Key Clicks II"><figcaption>Key Clicks II</figcaption></figure>
+          <figure><img src="images/research/s04/keyclicks/gesture-03.jpg" loading="lazy" alt="Spectrogram, Key Clicks III with air"><figcaption>Key Clicks III (with air)</figcaption></figure>
+        </div>
+
+        <h4>Interactions with the NIM</h4>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <h5>Key Clicks I</h5>
+            <span class="ts">KeyClicks_S04.wav · t≈0:32</span>
+            <p>The darkest excerpt of the three.</p>
+            <audio controls src="audio/research/s04/keyclicks/01.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Key Clicks II</h5>
+            <span class="ts">KeyClicks_S04.wav · t≈1:17</span>
+            <p>Dense texture.</p>
+            <audio controls src="audio/research/s04/keyclicks/02.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Key Clicks III (with air)</h5>
+            <span class="ts">KeyClicks_S04.wav · t≈2:20</span>
+            <p>The breath under the clicks keeps every band elevated throughout all four bands.</p>
+            <audio controls src="audio/research/s04/keyclicks/03_with_air.mp3"></audio>
+          </div>
+        </div>
+      </div>
+
+      <!-- FINAL IMPROVISATION AS SYNTHESIS -->
+      <div class="cat-section" id="cat-s04-finalimprov">
+        <h3>00 — Final Improvisation as Synthesis</h3>
+        <p class="cat-kicker">Source: Final_Impro_S04.wav (9:13) · four fresh case studies from the session's own closing improvisation</p>
+
+        <div class="cat-quick">
+          <div><span class="label">Instances</span><span class="value">4, drawn from across the full 9:13 take</span></div>
+
+          <div><span class="label">Character</span><span class="value">Recapitulates the session's typology within one continuous take</span></div>
+          <div><span class="label">Signature behaviour</span><span class="value">A dramatic dip-and-recovery, a late brightening surge, and a repeated two-state alternation all turn up unprompted</span></div>
+        </div>
+
+        <p>This take confirms, within a single unbroken performance, what the technique-by-technique studies above suggest separately: the loop again behaves like a threshold system, one that answers less to which note is played than to how stable or disrupted the reed's own excitation is at that moment. Across these four selected moments, the loop moves through nearly the full range of behaviour documented across the session: a dense, erratic fluctuation with no settled trend, a dramatic synchronized collapse followed by just as sharp a recovery, a steady sustain that tips into a late full-band brightening, and a clean, repeated alternation between a quiet state and a loud one, all with no change of technique behind any of these transitions. As in the individual recordings, breath and mechanical contact remain the two levers that decide which side of that threshold the loop lands on next: confirmation that it is the reed's stability, not its register, that keeps steering the interaction even across one continuous, freely moving take.</p>
+
+        <div class="cat-img-grid cat-img-grid--pairs">
+          <figure><img src="images/research/s04/finalimprov/gesture-01.jpg" loading="lazy" alt="Spectrogram, Final Improv I"><figcaption>Final Improv I</figcaption></figure>
+          <figure><img src="images/research/s04/finalimprov/gesture-02.jpg" loading="lazy" alt="Spectrogram, Final Improv II"><figcaption>Final Improv II</figcaption></figure>
+          <figure><img src="images/research/s04/finalimprov/gesture-03.jpg" loading="lazy" alt="Spectrogram, Final Improv III"><figcaption>Final Improv III</figcaption></figure>
+          <figure><img src="images/research/s04/finalimprov/gesture-04.jpg" loading="lazy" alt="Spectrogram, Final Improv IV"><figcaption>Final Improv IV</figcaption></figure>
+        </div>
+
+        <h4>Interactions with the NIM</h4>
+        <div class="cat-gesture-grid">
+          <div class="cat-gesture">
+            <h5>Final Improv I</h5>
+            <span class="ts">Final_Impro_S04.wav · t≈2:18</span>
+            <p>Every band fluctuates continuously with no settled trend across the full window.</p>
+            <audio controls src="audio/research/s04/finalimprov/01.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Final Improv II</h5>
+            <span class="ts">Final_Impro_S04.wav · t≈3:07</span>
+            <p>The low band collapses more than 40dB around six seconds in, then recovers just as sharply by the end of the window.</p>
+            <audio controls src="audio/research/s04/finalimprov/02.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Final Improv III</h5>
+            <span class="ts">Final_Impro_S04.wav · t≈4:33</span>
+            <p>Two mid-register bands sit in a fairly steady sustain for most of the window before every band brightens together in a surge over the final three seconds.</p>
+            <audio controls src="audio/research/s04/finalimprov/03.mp3"></audio>
+          </div>
+          <div class="cat-gesture">
+            <h5>Final Improv IV</h5>
+            <span class="ts">Final_Impro_S04.wav · t≈5:21</span>
+            <p>The window switches cleanly between a quiet passage and a bright, loud one three separate times across eleven seconds, never settling into either.</p>
+            <audio controls src="audio/research/s04/finalimprov/04.mp3"></audio>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <footer class="wrap" style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;">
@@ -1088,6 +3450,14 @@
     el.addEventListener('click', (e) => {
       e.preventDefault();
       showView(el.dataset.target);
+    });
+  });
+
+  // Catalogue "Jump to" dropdown: collapse it again once a link is picked.
+  document.querySelectorAll('.cat-jumpnav a').forEach(a => {
+    a.addEventListener('click', () => {
+      const details = a.closest('details.cat-jumpnav');
+      if (details) details.open = false;
     });
   });
 
