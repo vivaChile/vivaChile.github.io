@@ -178,6 +178,11 @@
     width:100%; aspect-ratio:4/3; object-fit:cover;
     filter:contrast(1.02); display:block;
   }
+  /* Circuits' Love Songs: both photos are portrait, and the default 16:9
+     cover box was cropping the stage out of the top one — swap the two
+     slots' aspect ratios so the top image crops less. */
+  #work-circuits-love-songs .work-detail-media{ aspect-ratio:4/3; }
+  #work-circuits-love-songs .work-detail-gallery img{ aspect-ratio:16/9; }
   .work-detail-body{ max-width:70ch; }
   .work-detail-body .kicker{
     font-size:0.78rem; letter-spacing:0.1em; text-transform:uppercase;
@@ -623,11 +628,11 @@
         <div class="works-list">
 
           <div class="work-tile" data-target="work-circuits-love-songs">
-            <img src="images/works/15-circuits-love-songs.jpg" alt="Circuits' Love Songs">
+            <img src="images/works/15-circuits-love-songs-2.jpg" alt="Circuits' Love Songs">
             <div class="thumb-cap"><div class="t">Circuits' Love Songs</div><div class="yr">01 · 2026</div></div>
           </div>
           <div class="work-tile" data-target="work-time-board-mother-control">
-            <img src="images/works/16-time-board-1.jpg" alt="Time Board Mother Control">
+            <img src="images/works/16-time-board-2.jpg" alt="Time Board Mother Control">
             <div class="thumb-cap"><div class="t">Time Board Mother Control</div><div class="yr">02 · 2026</div></div>
           </div>
           <div class="work-tile" data-target="work-no-input">
@@ -982,9 +987,9 @@
   <section id="work-time-board-mother-control" class="view">
     <div class="wrap">
       <a class="back-link" data-target="works">← Works</a>
-      <div class="work-detail-media"><img src="images/works/16-time-board-1.jpg" alt="Time Board Mother Control"></div>
+      <div class="work-detail-media"><img src="images/works/16-time-board-2.jpg" alt="Time Board Mother Control"></div>
       <div class="work-detail-gallery">
-        <img src="images/works/16-time-board-2.jpg" alt="Time Board Mother Control — performance detail">
+        <img src="images/works/16-time-board-1.jpg" alt="Time Board Mother Control — performance detail">
         <img src="images/works/16-time-board-3.jpg" alt="Time Board Mother Control — performance detail">
       </div>
       <div class="work-detail-body">
@@ -999,9 +1004,9 @@
   <section id="work-circuits-love-songs" class="view">
     <div class="wrap">
       <a class="back-link" data-target="works">← Works</a>
-      <div class="work-detail-media"><img src="images/works/15-circuits-love-songs.jpg" alt="Circuits' Love Songs"></div>
+      <div class="work-detail-media"><img src="images/works/15-circuits-love-songs-2.jpg" alt="Circuits' Love Songs"></div>
       <div class="work-detail-gallery">
-        <img src="images/works/15-circuits-love-songs-2.jpg" alt="Circuits' Love Songs — performance detail">
+        <img src="images/works/15-circuits-love-songs.jpg" alt="Circuits' Love Songs — performance detail">
       </div>
       <div class="work-detail-body">
         <p class="kicker">Music · 2026</p>
